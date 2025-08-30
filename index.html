@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #fff9db; /* faint yellow */
+      background: #fff9db;
       margin: 0;
       padding: 0;
       text-align: center;
@@ -105,16 +105,18 @@
       "MUJAHIDEEN","MUJAHIDEEN2","MUJAHIDEEN3",
       "THALAIVA","ALLA RETURNS",
       "FERNANDEZ","VANAKKAM MADURAI",
-      "DEVIL","JAI BHIM","DETECTIVE","NAIDUS PADAM"
+      "DEVIL","JAI BHIM","DETECTIVE","NAIDUS PADAM",
+      "CHOKER"
     ];
 
     const shows = {
-      "MARUTHUVAR": [{time:"12:00", screen:"Standard"}, {time:"15:00", screen:"IMAX"}, {time:"18:00", screen:"3D"}, {time:"21:00", screen:"Standard"}],
-      "HIT": [{time:"13:00", screen:"Standard"}, {time:"16:00", screen:"LUXE"}, {time:"19:00", screen:"4DX"}, {time:"22:00", screen:"Standard"}],
-      "SPY": [{time:"11:00", screen:"ICE"}, {time:"14:00", screen:"IMAX"}, {time:"17:00", screen:"Standard"}, {time:"20:00", screen:"3D"}],
-      "JAI BHIM": [{time:"10:00", screen:"Standard"}, {time:"13:00", screen:"IMAX"}, {time:"16:00", screen:"Standard"}, {time:"19:00", screen:"4DX"}],
-      "NAIDUS PADAM": [{time:"12:30", screen:"Standard"}, {time:"15:30", screen:"Standard"}, {time:"18:30", screen:"ICE"}, {time:"21:30", screen:"3D"}],
-      // Default for all others
+      "MARUTHUVAR": [{time:"12:00", screen:"Standard"}, {time:"15:00", screen:"IMAX"}, {time:"18:00", screen:"3D"}, {time:"22:20", screen:"Standard"}],
+      "HIT": [{time:"13:00", screen:"Standard"}, {time:"16:00", screen:"LUXE"}, {time:"19:00", screen:"4DX"}, {time:"22:20", screen:"Standard"}],
+      "SPY": [{time:"11:00", screen:"ICE"}, {time:"14:00", screen:"IMAX"}, {time:"17:00", screen:"Standard"}, {time:"22:20", screen:"3D"}],
+      "JAI BHIM": [{time:"10:00", screen:"Standard"}, {time:"13:00", screen:"IMAX"}, {time:"16:00", screen:"Standard"}, {time:"22:20", screen:"4DX"}],
+      "NAIDUS PADAM": [{time:"12:30", screen:"Standard"}, {time:"15:30", screen:"Standard"}, {time:"18:30", screen:"ICE"}, {time:"22:20", screen:"3D"}],
+      "CHOKER": [{time:"12:15", screen:"Standard"}, {time:"15:15", screen:"IMAX"}, {time:"18:15", screen:"Standard"}, {time:"22:20", screen:"LUXE"}],
+      // default will be standard timings
     };
 
     let state = {
@@ -148,7 +150,7 @@
         {time:"12:00", screen:"Standard"},
         {time:"15:00", screen:"Standard"},
         {time:"18:00", screen:"Standard"},
-        {time:"21:00", screen:"Standard"}
+        {time:"22:20", screen:"Standard"}
       ];
       navigate("<h2>Select Show for "+movie+"</h2>" + movieShows.map(s =>
         `<button onclick="seatSelection('${s.time}','${s.screen}')">${s.time} - ${s.screen}</button>`
@@ -239,3 +241,4 @@
   </script>
 </body>
 </html>
+
