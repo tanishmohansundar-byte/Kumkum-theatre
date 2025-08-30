@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kumkum Theatre</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff9db; /* faint yellow */
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    #app {
+      text-align: center;
+      padding: 20px;
+      max-width: 700px;
+    }
+    h1, h2, h3, p { margin-bottom: 20px; }
+    button {
+      background: #f5c400;
+      color: #333;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 25px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #ffdd55;
+    }
+    input {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin: 10px 0;
+      width: 80%;
+    }
+    .seats {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      justify-items: center;
+      margin: 20px 0;
+    }
+    .seat {
+      width: 40px;
+      height: 40px;
+      background: #eee;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .seat.selected {
+      background: #f5c400;
+      font-weight: bold;
+    }
+    .seat.rowE {
+      border: 2px solid #c00; /* highlight last row seats */
+    }
+    .seat.booked {
+      background: #999;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    const app = document.getElementById("app");
+    let booking = {};
+    let bookedSeats = []; // store permanently booked seats
+
+    function render(content) {
+      app.innerHTML = content;
+    }
+
+    // Welcome screen
+    function showWelcome() {
+      booking = {};
+      render(`
+        <h1>🎥 Welcome to Kumkum Theatre 🎥</h1>
+        <button onclick="chooseDirector()">Book Tickets</button>
+      `);
+    }
+
+    // Choose director
+    function chooseDirector() {
+      const directors = ["kute","ga","sorus","tanish","pope","mine","dute"];
+      render(`
+        <h2>Choose Director</h2>
+        ${directors.map(d => `<button onclick="chooseMovie('${d}')">${d}</button>`).join("")}
+        <br><button onclick="showWelcome()">⬅ Back</button>
+      `);
+    }
+
+    // Movie options
+    function chooseMovie(director) {
+      booking.director = director;
+      let movies = [];
+
+      if (director === "kute") movies = ["maruthuvar","hit","door","door2","spy"];
+      if (director === "ga") movies = ["bister","thozham","hospa","aim","one life"];
+      if (director === "sorus") movies = ["harbour","autokaran","uspa","uspa 2","uspa 3","uspa 4","hosaranga","hosaranga2","hosaranga 3","mixed emotions","johnson ducknail","magadi"];
+      if (director === "tanish") movies = ["mujahideen","mujahideen2","mujahideen3"];
+      if (director === "pope") movies = ["thalaiva","alla returns"];
+      if (director === "mine") movies = ["fernandez","vanakkam madurai"];
+      if (director === "dute") movies = ["devil"];
+
+      render(`
+        <h2>Choose Movie (Director: ${director})</h2>
+        ${movies.map(m => `<button onclick="enterDetails('${m}')">${m}</button>`).join("")}
+        <br><button onclick="chooseDirector()">⬅ Back</button>
+      `);
+    }
+
+    // Enter details
+    function enterDetails(movie) {
+      booking.movie = movie;
+      render(`
+        <h2>Enter Details</h2>
+        <input type="text" id="name" placeholder="Name"><br>
+        <input type="text" id="phone" placeholder="Phone Number"><br>
+        <input type="email" id="email" placeholder="Email"><br>
+        <input type="text" id="card" placeholder="Credit Card Number"><br>
+        <button onclick="seatSelection()">Continue</button>
+        <br><button onclick="chooseMovie('${booking.director}')">⬅ Back</button>
+      `);
+    }
+
+    // Seat Selection
+    function seatSelection() {
+      booking.name = document.getElementById("name").value.trim();
+      booking.phone = document.getElementById("phone").value.trim();
+      booking.email = document.getElementById("email").value.trim();
+      booking.card = document.getElementById("card").value.trim();
+
+      const rows = ["A","B","C","D","E"]; // last row = E
+      let seatHTML = "";
+      rows.forEach(r => {
+        for (let i=1; i<=6; i++) {
+          const seatId = r + i;
+          const isBooked = bookedSeats.includes(seatId);
+          seatHTML += `<div class="seat ${r==='E' ? 'rowE':''} ${isBooked ? 'booked':''}" 
+                        id="${seatId}" 
+                        onclick="${isBooked ? '' : `toggleSeat('${seatId}')`}">${seatId}</div>`;
+        }
+      });
+
+      render(`
+        <h2>Select Your Seats</h2>
+        <div class="seats">${seatHTML}</div>
+        <p>Selected: <span id="selectedSeats">None</span></p>
+        <button onclick="askBeverages()">Continue</button>
+        <br><button onclick="enterDetails('${booking.movie}')">⬅ Back</button>
+      `);
+
+      booking.seats = [];
+    }
+
+    function toggleSeat(seatId) {
+      const seatEl = document.getElementById(seatId);
+      if (!booking.seats) booking.seats = [];
+
+      if (booking.seats.includes(seatId)) {
+        booking.seats = booking.seats.filter(s => s !== seatId);
+        seatEl.classList.remove("selected");
+      } else {
+        booking.seats.push(seatId);
+        seatEl.classList.add("selected");
+      }
+      document.getElementById("selectedSeats").innerText = booking.seats.join(", ") || "None";
+    }
+
+    // Beverage options
+    function askBeverages() {
+      render(`
+        <h2>Do you want Beverages?</h2>
+        <button onclick="chooseBeverages()">Yes</button>
+        <button onclick="showConfirmation()">No</button>
+        <br><button onclick="seatSelection()">⬅ Back</button>
+      `);
+    }
+
+    function chooseBeverages() {
+      const items = ["Popcorn","Coca Cola","Pepsi","French Fries","Nachos"];
+      render(`
+        <h2>Select Beverages</h2>
+        ${items.map(i => `<button onclick="addBeverage('${i}')">${i}</button>`).join("")}
+        <p>Selected: ${booking.beverages ? booking.beverages.join(", ") : "None"}</p>
+        <button onclick="showConfirmation()">Confirm Selection</button>
+        <br><button onclick="askBeverages()">⬅ Back</button>
+      `);
+    }
+
+    function addBeverage(item) {
+      if (!booking.beverages) booking.beverages = [];
+      if (!booking.beverages.includes(item)) booking.beverages.push(item);
+      chooseBeverages();
+    }
+
+    // Price calculation
+    function calculatePrice() {
+      let basePrice = 200; 
+      const m = booking.movie.toLowerCase();
+      const d = booking.director.toLowerCase();
+
+      if (d === "tanish" && (m === "spy" || m === "aim" || m === "magadi")) {
+        basePrice = 300;
+      }
+
+      let total = 0;
+      booking.seats.forEach(seat => {
+        if (seat.startsWith("E")) {
+          total += basePrice + 100; // last row extra
+        } else {
+          total += basePrice;
+        }
+      });
+
+      if (booking.beverages) {
+        total += booking.beverages.length * 50;
+      }
+
+      booking.price = total + " lators";
+    }
+
+    // Confirmation
+    function showConfirmation() {
+      calculatePrice();
+      // mark seats as permanently booked
+      bookedSeats.push(...booking.seats);
+
+      render(`
+        <h2>Booking Confirmed 🎉</h2>
+        <p><b>Name:</b> ${booking.name}</p>
+        <p><b>Director:</b> ${booking.director}</p>
+        <p><b>Movie:</b> ${booking.movie}</p>
+        <p><b>Seats:</b> ${booking.seats.join(", ")}</p>
+        <p><b>Beverages:</b> ${booking.beverages ? booking.beverages.join(", ") : "None"}</p>
+        <p><b>Total Price:</b> ${booking.price}</p>
+        <button onclick="showWelcome()">Book Again</button>
+      `);
+    }
+
+    showWelcome();
+  </script>
+</body>
+</html>
