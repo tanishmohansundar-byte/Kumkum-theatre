@@ -7,263 +7,255 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #fff8dc; /* faint yellow */
+      background: #fff8dc; /* faint yellow */
       color: #222;
-      overflow-x: hidden;
+      overflow-y: scroll;
+      scrollbar-width: thin;
+      scrollbar-color: darkblue #fff8dc;
     }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-thumb { background: darkblue; border-radius: 5px; }
+    ::-webkit-scrollbar-track { background: #fff8dc; }
 
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
+    .screen {
+      display: none;
+      padding: 40px;
       text-align: center;
+      min-height: 100vh;
     }
+    .active { display: block; }
 
-    h1, h2 {
-      margin-bottom: 20px;
-    }
-
+    h1, h2 { margin-bottom: 20px; }
     button {
-      background: #ff9800;
-      border: none;
-      color: white;
       padding: 12px 20px;
-      margin: 10px;
-      border-radius: 8px;
+      margin: 8px;
       font-size: 16px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      border: none;
+      border-radius: 8px;
+      background: darkblue;
+      color: white;
+      transition: 0.3s;
     }
-
-    button:hover {
-      background: #e68900;
-    }
-
-    input {
-      padding: 10px;
-      margin: 8px;
-      width: 70%;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    .seats {
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      gap: 8px;
-      justify-content: center;
-      margin: 20px 0;
-    }
+    button:hover { background: #003366; }
 
     .seat {
       width: 40px;
       height: 40px;
-      background: #ddd;
+      margin: 5px;
       border-radius: 6px;
-      line-height: 40px;
+      border: 1px solid #222;
       cursor: pointer;
-      font-size: 14px;
+      display: inline-block;
+      vertical-align: middle;
     }
+    .selected { background: green; color: white; }
+    .recliner { background: #d2b48c; }
+    .booked { background: gray; cursor: not-allowed; }
 
-    .seat.selected {
-      background: #4caf50;
-      color: white;
-    }
-
-    .seat.booked {
-      background: #999;
-      cursor: not-allowed;
-    }
-
-    .seat.recliner {
-      background: #ffcc80;
-    }
-
-    .seat.last-row {
-      border: 2px solid #000;
-    }
-
-    .scrollbar::-webkit-scrollbar {
-      width: 10px;
-    }
-    .scrollbar::-webkit-scrollbar-thumb {
-      background: darkblue;
-      border-radius: 5px;
+    .summary {
+      text-align: left;
+      display: inline-block;
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <div class="container scrollbar" id="app"></div>
 
-  <script>
-    const app = document.getElementById("app");
-    let booking = {};
-    let bookedSeats = [];
+  <!-- Screen 1 -->
+  <div id="screen1" class="screen active">
+    <h1>🎬 Welcome to Kumkum Theatre 🎬</h1>
+    <button onclick="nextScreen(2)">Continue</button>
+  </div>
 
-    function render(content) {
-      app.innerHTML = content;
-    }
+  <!-- Screen 2: Director -->
+  <div id="screen2" class="screen">
+    <h2>Choose Director</h2>
+    <div id="director-options"></div>
+    <button onclick="prevScreen(1)">Back</button>
+  </div>
 
-    // Screen 1: Welcome
-    function showWelcome() {
-      render(`
-        <h1>Welcome to Kumkum Theatre</h1>
-        <button onclick="chooseDirector()">Continue</button>
-      `);
-    }
+  <!-- Screen 3: Movies -->
+  <div id="screen3" class="screen">
+    <h2>Select Movie</h2>
+    <div id="movie-options"></div>
+    <button onclick="prevScreen(2)">Back</button>
+  </div>
 
-    // Screen 2: Choose Director
-    function chooseDirector() {
-      const directors = ["kute","ga","sorus","tanish","pope","mine","dute"];
-      render("<h2>Choose Director</h2>" + 
-        directors.map(d => `<button onclick="chooseMovie('${d}')">${d.toUpperCase()}</button>`).join(""));
-    }
+  <!-- Screen 4: Show Timing -->
+  <div id="screen4" class="screen">
+    <h2>Select Show Timing</h2>
+    <button onclick="selectShow('Morning')">Morning</button>
+    <button onclick="selectShow('Afternoon')">Afternoon</button>
+    <button onclick="selectShow('Evening')">Evening</button>
+    <button onclick="selectShow('Night')">Night</button>
+    <button onclick="prevScreen(3)">Back</button>
+  </div>
 
-    // Screen 3: Choose Movie
-    function chooseMovie(director) {
-      booking.director = director;
-      let movies = [];
-      if (director === "kute") movies = ["maruthuvar","hit","door","door2","spy"];
-      else if (director === "ga") movies = ["bister","thozham","hospa","aim","one life"];
-      else if (director === "sorus") movies = ["harbour","autokaran","uspa","uspa 2","uspa 3","uspa 4","hosaranga","hosaranga2","hosaranga3","mixed emotions","johnson ducknail","magadi"];
-      else if (director === "tanish") movies = ["mujahideen","mujahideen2","mujahideen3"];
-      else if (director === "pope") movies = ["thalaiva","alla returns"];
-      else if (director === "mine") movies = ["fernandez","vanakkam madurai"];
-      else if (director === "dute") movies = ["devil"];
+  <!-- Screen 5: Seat Selection -->
+  <div id="screen5" class="screen">
+    <h2>Select Seats</h2>
+    <div id="seat-map"></div>
+    <p id="seat-info"></p>
+    <button onclick="proceedSeats()">Continue</button>
+    <button onclick="prevScreen(4)">Back</button>
+  </div>
 
-      render("<h2>Choose Movie</h2>" +
-        movies.map(m => `<button onclick="askDetails('${m}')">${m.toUpperCase()}</button>`).join(""));
-    }
+  <!-- Screen 6: Details -->
+  <div id="screen6" class="screen">
+    <h2>Enter Your Details</h2>
+    <input id="name" placeholder="Name"><br><br>
+    <input id="phone" placeholder="Phone"><br><br>
+    <input id="email" placeholder="Email"><br><br>
+    <input id="card" placeholder="Credit Card Number"><br><br>
+    <button onclick="saveDetails()">Continue</button>
+    <button onclick="prevScreen(5)">Back</button>
+  </div>
 
-    // Screen 4: Enter Details
-    function askDetails(movie) {
-      booking.movie = movie;
-      render(`
-        <h2>Enter Your Details</h2>
-        <input id="name" placeholder="Name"><br>
-        <input id="phone" placeholder="Phone"><br>
-        <input id="email" placeholder="Email"><br>
-        <input id="card" placeholder="Credit Card Number"><br>
-        <input id="people" type="number" min="1" placeholder="Number of People"><br>
-        <button onclick="seatSelection()">Next</button>
-      `);
-    }
+  <!-- Screen 7: Beverages -->
+  <div id="screen7" class="screen">
+    <h2>Do you want beverages?</h2>
+    <button onclick="selectBeverages(true)">Yes</button>
+    <button onclick="selectBeverages(false)">No</button>
+    <button onclick="prevScreen(6)">Back</button>
+  </div>
 
-    // Screen 5: Seat Selection
-    function seatSelection() {
-      booking.name = document.getElementById("name").value;
-      booking.phone = document.getElementById("phone").value;
-      booking.email = document.getElementById("email").value;
-      booking.card = document.getElementById("card").value;
-      booking.people = parseInt(document.getElementById("people").value);
-      booking.seats = [];
+  <!-- Screen 8: Beverages Options -->
+  <div id="screen8" class="screen">
+    <h2>Select Beverages</h2>
+    <label><input type="checkbox" value="Popcorn"> Popcorn (50 lators)</label><br>
+    <label><input type="checkbox" value="Coca Cola"> Coca Cola (40 lators)</label><br>
+    <label><input type="checkbox" value="Pepsi"> Pepsi (40 lators)</label><br>
+    <label><input type="checkbox" value="French Fries"> French Fries (70 lators)</label><br>
+    <label><input type="checkbox" value="Nachos"> Nachos (80 lators)</label><br><br>
+    <button onclick="proceedBeverages()">Continue</button>
+    <button onclick="prevScreen(7)">Back</button>
+  </div>
 
-      let seats = "";
-      for (let i=1;i<=40;i++) {
-        let cls = "seat";
-        if (i>32) cls += " last-row";
-        if ([5,6,7,8].includes(i)) cls += " recliner";
-        seats += `<div class="${cls}" onclick="selectSeat(${i})">${i}</div>`;
+  <!-- Screen 9: Summary -->
+  <div id="screen9" class="screen">
+    <h2>Booking Summary</h2>
+    <div id="summary" class="summary"></div><br>
+    <button onclick="nextScreen(10)">Confirm</button>
+    <button onclick="prevScreen(8)">Back</button>
+  </div>
+
+  <!-- Screen 10: Confirmation -->
+  <div id="screen10" class="screen">
+    <h2>✅ Booking Confirmed!</h2>
+    <div id="ticket" class="summary"></div><br>
+    <button onclick="nextScreen(11)">Finish</button>
+  </div>
+
+  <!-- Screen 11: Thanks -->
+  <div id="screen11" class="screen">
+    <h1>🙏 Thanks for using Kumkum Theatre! 🙏</h1>
+  </div>
+
+<script>
+  const directors = {
+    KUTE: ["MARUTHUVAR","HIT","DOOR","DOOR2","SPY"],
+    GA: ["BISTER","THOZHAM","HOSPA","AIM","ONE LIFE"],
+    SORUS: ["HARBOUR","AUTOKARAN","USPA","USPA 2","USPA 3","USPA 4","HOSARANGA","HOSARANGA2","HOSARANGA 3","MIXED EMOTIONS","JOHNSON DUCKNAIL","MAGADI"],
+    TANISH: ["MUJAHIDEEN","MUJAHIDEEN2","MUJAHIDEEN3"],
+    POPE: ["THALAIVA","ALLA RETURNS"],
+    MINE: ["FERNANDEZ","VANAKKAM MADURAI"],
+    DUTE: ["DEVIL"]
+  };
+  let booking = { director:"", movie:"", show:"", seats:[], details:{}, beverages:[], price:0 };
+
+  function nextScreen(n){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); document.getElementById("screen"+n).classList.add("active"); }
+  function prevScreen(n){ nextScreen(n); }
+
+  // Director buttons
+  const dirDiv=document.getElementById("director-options");
+  for(let d in directors){
+    let btn=document.createElement("button");
+    btn.textContent=d;
+    btn.onclick=()=>{ booking.director=d; showMovies(d); };
+    dirDiv.appendChild(btn);
+  }
+  function showMovies(d){
+    let movDiv=document.getElementById("movie-options"); movDiv.innerHTML="";
+    directors[d].forEach(m=>{
+      let b=document.createElement("button"); b.textContent=m; b.onclick=()=>{ booking.movie=m; nextScreen(4); };
+      movDiv.appendChild(b);
+    });
+    nextScreen(3);
+  }
+  function selectShow(s){ booking.show=s; buildSeats(); nextScreen(5); }
+
+  // Seats
+  function buildSeats(){
+    let seatDiv=document.getElementById("seat-map"); seatDiv.innerHTML="";
+    let rows=["A","B","C","D","E","F"];
+    rows.forEach((r,i)=>{
+      for(let j=1;j<=8;j++){
+        let seat=document.createElement("div");
+        seat.className="seat";
+        seat.textContent=r+j;
+        if(r==="F") seat.classList.add("recliner");
+        seat.onclick=()=>toggleSeat(seat);
+        seatDiv.appendChild(seat);
       }
-      render(`
-        <h2>Select Seats</h2>
-        <p>Select exactly ${booking.people} seat(s)</p>
-        <div class="seats">${seats}</div>
-        <button onclick="askBeverages()">Next</button>
-      `);
-      markBookedSeats();
-    }
+      seatDiv.appendChild(document.createElement("br"));
+    });
+  }
+  function toggleSeat(seat){
+    if(seat.classList.contains("selected")){ seat.classList.remove("selected"); booking.seats=booking.seats.filter(s=>s!==seat.textContent); }
+    else { seat.classList.add("selected"); booking.seats.push(seat.textContent); }
+    document.getElementById("seat-info").textContent="Selected: "+booking.seats.join(", ");
+  }
+  function proceedSeats(){ nextScreen(6); }
 
-    function selectSeat(num) {
-      let el = [...document.getElementsByClassName("seat")].find(s => s.textContent==num);
-      if (el.classList.contains("booked")) return;
-      if (booking.seats.includes(num)) {
-        booking.seats = booking.seats.filter(s=>s!==num);
-        el.classList.remove("selected");
-      } else {
-        if (booking.seats.length < booking.people) {
-          booking.seats.push(num);
-          el.classList.add("selected");
-        }
-      }
-    }
+  // Details
+  function saveDetails(){
+    booking.details={ name:document.getElementById("name").value, phone:document.getElementById("phone").value, email:document.getElementById("email").value, card:document.getElementById("card").value };
+    nextScreen(7);
+  }
 
-    function markBookedSeats() {
-      bookedSeats.forEach(num => {
-        let el = [...document.getElementsByClassName("seat")].find(s => s.textContent==num);
-        if (el) el.classList.add("booked");
-      });
-    }
+  function selectBeverages(choice){ choice? nextScreen(8): showSummary(); }
+  function proceedBeverages(){ let checks=document.querySelectorAll("#screen8 input:checked"); booking.beverages=[...checks].map(c=>c.value); showSummary(); }
 
-    // Screen 6: Beverages
-    function askBeverages() {
-      render(`
-        <h2>Do you want Beverages?</h2>
-        <button onclick="selectBeverages()">Yes</button>
-        <button onclick="showConfirmation()">No</button>
-      `);
-    }
+  function showSummary(){
+    let price=0;
+    // base price rules
+    if(booking.director==="TANISH" && ["SPY","AIM","MAGADI"].includes(booking.movie)) price=300;
+    else price=200;
+    price*=booking.seats.length;
+    // add seat surcharges
+    booking.seats.forEach(s=>{
+      if(s.startsWith("E")) price+=50; // last row surcharge
+      if(s.startsWith("F")) price+=100; // recliner surcharge
+    });
+    // beverages
+    booking.beverages.forEach(b=>{ if(b==="Popcorn") price+=50; if(b==="Coca Cola"||b==="Pepsi") price+=40; if(b==="French Fries") price+=70; if(b==="Nachos") price+=80; });
+    booking.price=price;
+    let sum=document.getElementById("summary");
+    sum.innerHTML=`<b>Director:</b> ${booking.director}<br>
+    <b>Movie:</b> ${booking.movie}<br>
+    <b>Show:</b> ${booking.show}<br>
+    <b>Seats:</b> ${booking.seats.join(", ")}<br>
+    <b>Beverages:</b> ${booking.beverages.join(", ")||"None"}<br>
+    <b>Total:</b> ${booking.price} lators`;
+    nextScreen(9);
+  }
 
-    function selectBeverages() {
-      render(`
-        <h2>Select Beverages</h2>
-        <button onclick="toggleBeverage('Popcorn')">Popcorn</button>
-        <button onclick="toggleBeverage('Coca Cola')">Coca Cola</button>
-        <button onclick="toggleBeverage('Pepsi')">Pepsi</button>
-        <button onclick="toggleBeverage('French Fries')">French Fries</button>
-        <button onclick="toggleBeverage('Nachos')">Nachos</button>
-        <br><br>
-        <button onclick="showConfirmation()">Continue</button>
-      `);
-      booking.beverages = [];
-    }
+  function confirmBooking(){
+    let t=document.getElementById("ticket");
+    t.innerHTML=`🎟 <b>Kumkum Theatre Ticket</b><br>
+    Movie: ${booking.movie}<br>
+    Director: ${booking.director}<br>
+    Show: ${booking.show}<br>
+    Seats: ${booking.seats.join(", ")}<br>
+    Name: ${booking.details.name}<br>
+    Total Paid: ${booking.price} lators`;
+  }
+  document.querySelector("#screen9 button").onclick=function(){ confirmBooking(); nextScreen(10); };
+</script>
 
-    function toggleBeverage(item) {
-      if (!booking.beverages) booking.beverages = [];
-      if (booking.beverages.includes(item)) {
-        booking.beverages = booking.beverages.filter(b => b !== item);
-      } else {
-        booking.beverages.push(item);
-      }
-    }
-
-    // Pricing
-    function calculatePrice() {
-      let base = 200;
-      if (booking.director === "tanish" && ["spy","aim","magadi"].includes(booking.movie)) {
-        base = 300;
-      }
-      let total = base * booking.people;
-
-      booking.seats.forEach(num=>{
-        if ([5,6,7,8].includes(num)) total += 100; // recliner
-        if (num>32) total += 50; // last row
-      });
-
-      if (booking.beverages) total += booking.beverages.length * 50;
-
-      booking.price = total + " lators";
-    }
-
-    // Screen 7: Confirmation
-    function showConfirmation() {
-      calculatePrice();
-      bookedSeats.push(...booking.seats);
-
-      render(`
-        <h2>Booking Confirmed 🎉</h2>
-        <p><b>Name:</b> ${booking.name}</p>
-        <p><b>Director:</b> ${booking.director.toUpperCase()}</p>
-        <p><b>Movie:</b> ${booking.movie.toUpperCase()}</p>
-        <p><b>Seats:</b> ${booking.seats.join(", ")}</p>
-        <p><b>Beverages:</b> ${booking.beverages ? booking.beverages.join(", ") : "None"}</p>
-        <p><b>Total Price:</b> ${booking.price}</p>
-        <button onclick="showWelcome()">Book Again</button>
-      `);
-    }
-
-    showWelcome();
-  </script>
 </body>
 </html>
