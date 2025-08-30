@@ -5,94 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kumkum Theatre</title>
   <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      margin: 0; 
-      padding: 0; 
-      background: #f2f2f7; 
-      color: #222; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      min-height: 100vh; 
-    }
-    .container { 
-      text-align: center; 
-      padding: 30px; 
-      background: #fff; 
-      border-radius: 12px; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
-      width: 90%; 
-      max-width: 650px;
-    }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f2f2f7; color: #222; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .container { text-align: center; padding: 30px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 90%; max-width: 650px; }
     h1, h2 { margin-bottom: 20px; }
-    button { 
-      padding: 12px 20px; 
-      margin: 10px; 
-      border: none; 
-      border-radius: 8px; 
-      background: #ffcc00; 
-      font-size: 16px; 
-      cursor: pointer; 
-      display: block; 
-      margin-left: auto; 
-      margin-right: auto; 
-      width: fit-content;
-    }
+    button { padding: 12px 20px; margin: 10px; border: none; border-radius: 8px; background: #ffcc00; font-size: 16px; cursor: pointer; display: block; margin-left: auto; margin-right: auto; width: fit-content; }
     button:hover { background: #ffaa00; }
 
     /* 🎟 Date bar sticky */
-    .date-bar {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      margin: 20px 0;
-      padding: 10px;
-      position: sticky;
-      top: 0;
-      background: #fff;
-      z-index: 10;
-      border-bottom: 2px solid #ddd;
-    }
-    .date-btn {
-      flex: 0 0 auto;
-      padding: 12px 15px;
-      background: #ddd;
-      border-radius: 10px;
-      cursor: pointer;
-      border: none;
-      font-size: 14px;
-    }
-    .date-btn.active {
-      background: #ffcc00;
-      font-weight: bold;
-    }
+    .date-bar { display: flex; gap: 10px; overflow-x: auto; margin: 20px 0; padding: 10px; position: sticky; top: 0; background: #fff; z-index: 10; border-bottom: 2px solid #ddd; }
+    .date-btn { flex: 0 0 auto; padding: 12px 15px; background: #ddd; border-radius: 10px; cursor: pointer; border: none; font-size: 14px; }
+    .date-btn.active { background: #ffcc00; font-weight: bold; }
 
     /* 🎬 Seats */
-    .seat-grid { 
-      display: grid; 
-      grid-template-columns: repeat(10, 1fr); 
-      gap: 5px; 
-      justify-content: center; 
-      margin-top: 20px; 
-    }
-    .seat { 
-      padding: 10px; 
-      border-radius: 6px; 
-      border: 1px solid #333; 
-      cursor: pointer; 
-      background: #eee; 
-      text-align: center;
-    }
+    .seat-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; justify-content: center; margin-top: 20px; }
+    .seat { padding: 10px; border-radius: 6px; border: 1px solid #333; cursor: pointer; background: #eee; text-align: center; }
     .seat.selected { background: #4caf50; color: white; }
-    .screen { 
-      width: 80%; 
-      margin: 0 auto 20px; 
-      padding: 10px; 
-      background: #333; 
-      color: white; 
-      border-radius: 8px; 
-    }
+    .premium { background: #d1c4e9; } /* top rows premium look */
+    .screen { width: 80%; margin: 0 auto 20px; padding: 10px; background: #333; color: white; border-radius: 8px; }
 
     /* 🍿 Snacks */
     .snack-item { margin: 10px 0; }
@@ -110,15 +39,60 @@
 
     // 🎬 Movies
     const movies = [
-      { title: "Maruthuvar" },
-      { title: "Spy" },
-      { title: "Jai Bhim" },
-      { title: "Naidus Padam" },
-      { title: "Detective" },
-      { title: "Johnson Ducknail" },
-      { title: "Mixed Emotions" },
-      { title: "Sorus" },
-      { title: "DD" }
+      { title: "Maruthuvar", shows: [
+        { time: "10:30 AM", screen: "Standard" },
+        { time: "2:00 PM", screen: "IMAX" },
+        { time: "6:00 PM", screen: "3D" },
+        { time: "9:30 PM", screen: "LUXE" }
+      ]},
+      { title: "Spy", shows: [
+        { time: "9:00 AM", screen: "Standard" },
+        { time: "12:30 PM", screen: "3D" },
+        { time: "5:15 PM", screen: "IMAX" },
+        { time: "8:45 PM", screen: "Standard" }
+      ]},
+      { title: "Jai Bhim", shows: [
+        { time: "11:00 AM", screen: "Standard" },
+        { time: "3:00 PM", screen: "IMAX" },
+        { time: "7:00 PM", screen: "4DX" },
+        { time: "10:30 PM", screen: "Standard" }
+      ]},
+      { title: "Naidus Padam", shows: [
+        { time: "9:15 AM", screen: "Standard" },
+        { time: "1:15 PM", screen: "3D" },
+        { time: "6:00 PM", screen: "LUXE" },
+        { time: "9:45 PM", screen: "Standard" }
+      ]},
+      { title: "Detective", shows: [
+        { time: "10:00 AM", screen: "IMAX" },
+        { time: "2:00 PM", screen: "Standard" },
+        { time: "5:30 PM", screen: "3D" },
+        { time: "9:15 PM", screen: "4DX" }
+      ]},
+      { title: "Johnson Ducknail", shows: [
+        { time: "9:45 AM", screen: "Standard" },
+        { time: "1:00 PM", screen: "Standard" },
+        { time: "4:30 PM", screen: "3D" },
+        { time: "8:30 PM", screen: "IMAX" }
+      ]},
+      { title: "Mixed Emotions", shows: [
+        { time: "11:15 AM", screen: "Standard" },
+        { time: "2:45 PM", screen: "3D" },
+        { time: "6:15 PM", screen: "Standard" },
+        { time: "10:00 PM", screen: "IMAX" }
+      ]},
+      { title: "Sorus", shows: [
+        { time: "9:30 AM", screen: "Standard" },
+        { time: "1:30 PM", screen: "IMAX" },
+        { time: "5:00 PM", screen: "4DX" },
+        { time: "9:00 PM", screen: "Standard" }
+      ]},
+      { title: "DD", shows: [
+        { time: "10:00 AM", screen: "3D" },
+        { time: "2:00 PM", screen: "Standard" },
+        { time: "6:00 PM", screen: "IMAX" },
+        { time: "9:30 PM", screen: "LUXE" }
+      ]}
     ];
 
     // 📅 Generate 7 days dynamically
@@ -128,14 +102,6 @@
       d.setDate(today.getDate() + i);
       return d;
     });
-
-    // 🎟️ Shows
-    const showTemplates = [
-      { time: "10:00 AM", screen: "Standard" },
-      { time: "1:00 PM", screen: "3D" },
-      { time: "5:00 PM", screen: "IMAX" },
-      { time: "9:00 PM", screen: "LUXE" }
-    ];
 
     const beverages = [
       { name: "Popcorn", price: 100 },
@@ -209,14 +175,14 @@
 
     function loadShowTimings() {
       app.innerHTML = `<div class="container"><h2>Shows for ${selectedMovie.title} on ${selectedDate}</h2>`;
-      showTemplates.forEach((s, i) => {
+      selectedMovie.shows.forEach((s, i) => {
         app.innerHTML += `<button onclick="selectShow(${i})">${s.time} - ${s.screen}</button>`;
       });
       app.innerHTML += `<button onclick="goBack()">⬅ Back</button></div>`;
     }
 
     function selectShow(i) {
-      selectedShow = showTemplates[i];
+      selectedShow = selectedMovie.shows[i];
       navigate(loadSeatSelection);
     }
 
@@ -227,7 +193,7 @@
       app.innerHTML += `<div class="seat-grid">`;
       for (let i = 1; i <= 40; i++) {
         let price = i <= 20 ? 350 : 200;
-        app.innerHTML += `<div class="seat" onclick="toggleSeat(${i}, ${price}, this)">S${i}<br>${price}</div>`;
+        app.innerHTML += `<div class="seat ${i<=20?"premium":""}" onclick="toggleSeat(${i}, ${price}, this)">S${i}<br>${price}</div>`;
       }
       app.innerHTML += `</div>`;
       app.innerHTML += `<button onclick="navigate(loadSnacks)">Continue</button>`;
