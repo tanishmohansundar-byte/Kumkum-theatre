@@ -48,6 +48,7 @@
       cursor: pointer;
       display: inline-block;
       vertical-align: middle;
+      line-height: 40px;
     }
     .selected { background: green; color: white; }
     .recliner { background: #d2b48c; }
@@ -139,7 +140,7 @@
   <div id="screen9" class="screen">
     <h2>Booking Summary</h2>
     <div id="summary" class="summary"></div><br>
-    <button onclick="nextScreen(10)">Confirm</button>
+    <button id="confirmBtn">Confirm</button>
     <button onclick="prevScreen(8)">Back</button>
   </div>
 
@@ -147,6 +148,7 @@
   <div id="screen10" class="screen">
     <h2>✅ Booking Confirmed!</h2>
     <div id="ticket" class="summary"></div><br>
+    <div id="qrcode"></div><br>
     <button onclick="nextScreen(11)">Finish</button>
   </div>
 
@@ -155,6 +157,7 @@
     <h1>🙏 Thanks for using Kumkum Theatre! 🙏</h1>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <script>
   const directors = {
     KUTE: ["MARUTHUVAR","HIT","DOOR","DOOR2","SPY"],
@@ -205,34 +208,50 @@
     });
   }
   function toggleSeat(seat){
-    if(seat.classList.contains("selected")){ seat.classList.remove("selected"); booking.seats=booking.seats.filter(s=>s!==seat.textContent); }
-    else { seat.classList.add("selected"); booking.seats.push(seat.textContent); }
+    if(seat.classList.contains("selected")){
+      seat.classList.remove("selected");
+      booking.seats=booking.seats.filter(s=>s!==seat.textContent);
+    } else {
+      seat.classList.add("selected");
+      booking.seats.push(seat.textContent);
+    }
     document.getElementById("seat-info").textContent="Selected: "+booking.seats.join(", ");
   }
   function proceedSeats(){ nextScreen(6); }
 
   // Details
   function saveDetails(){
-    booking.details={ name:document.getElementById("name").value, phone:document.getElementById("phone").value, email:document.getElementById("email").value, card:document.getElementById("card").value };
+    booking.details={
+      name:document.getElementById("name").value,
+      phone:document.getElementById("phone").value,
+      email:document.getElementById("email").value,
+      card:document.getElementById("card").value
+    };
     nextScreen(7);
   }
 
   function selectBeverages(choice){ choice? nextScreen(8): showSummary(); }
-  function proceedBeverages(){ let checks=document.querySelectorAll("#screen8 input:checked"); booking.beverages=[...checks].map(c=>c.value); showSummary(); }
+  function proceedBeverages(){
+    let checks=document.querySelectorAll("#screen8 input:checked");
+    booking.beverages=[...checks].map(c=>c.value);
+    showSummary();
+  }
 
   function showSummary(){
     let price=0;
-    // base price rules
     if(booking.director==="TANISH" && ["SPY","AIM","MAGADI"].includes(booking.movie)) price=300;
     else price=200;
     price*=booking.seats.length;
-    // add seat surcharges
     booking.seats.forEach(s=>{
       if(s.startsWith("E")) price+=50; // last row surcharge
       if(s.startsWith("F")) price+=100; // recliner surcharge
     });
-    // beverages
-    booking.beverages.forEach(b=>{ if(b==="Popcorn") price+=50; if(b==="Coca Cola"||b==="Pepsi") price+=40; if(b==="French Fries") price+=70; if(b==="Nachos") price+=80; });
+    booking.beverages.forEach(b=>{
+      if(b==="Popcorn") price+=50;
+      if(b==="Coca Cola"||b==="Pepsi") price+=40;
+      if(b==="French Fries") price+=70;
+      if(b==="Nachos") price+=80;
+    });
     booking.price=price;
     let sum=document.getElementById("summary");
     sum.innerHTML=`<b>Director:</b> ${booking.director}<br>
@@ -244,7 +263,7 @@
     nextScreen(9);
   }
 
-  function confirmBooking(){
+  document.getElementById("confirmBtn").onclick=function(){
     let t=document.getElementById("ticket");
     t.innerHTML=`🎟 <b>Kumkum Theatre Ticket</b><br>
     Movie: ${booking.movie}<br>
@@ -253,8 +272,13 @@
     Seats: ${booking.seats.join(", ")}<br>
     Name: ${booking.details.name}<br>
     Total Paid: ${booking.price} lators`;
-  }
-  document.querySelector("#screen9 button").onclick=function(){ confirmBooking(); nextScreen(10); };
+
+    // QR Code
+    document.getElementById("qrcode").innerHTML="";
+    let qrText=`Kumkum Theatre\nMovie: ${booking.movie}\nDirector: ${booking.director}\nShow: ${booking.show}\nSeats: ${booking.seats.join(", ")}\nName: ${booking.details.name}\nPrice: ${booking.price} lators`;
+    new QRCode(document.getElementById("qrcode"),{ text:qrText, width:150, height:150 });
+    nextScreen(10);
+  };
 </script>
 
 </body>
