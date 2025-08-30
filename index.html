@@ -116,7 +116,6 @@
       "JAI BHIM": [{time:"10:00", screen:"Standard"}, {time:"13:00", screen:"IMAX"}, {time:"16:00", screen:"Standard"}, {time:"22:20", screen:"4DX"}],
       "NAIDUS PADAM": [{time:"12:30", screen:"Standard"}, {time:"15:30", screen:"Standard"}, {time:"18:30", screen:"ICE"}, {time:"22:20", screen:"3D"}],
       "CHOKER": [{time:"12:15", screen:"Standard"}, {time:"15:15", screen:"IMAX"}, {time:"18:15", screen:"Standard"}, {time:"22:20", screen:"LUXE"}],
-      // default will be standard timings
     };
 
     let state = {
@@ -126,6 +125,8 @@
       snacks: {},
       total: 0
     };
+
+    let bookedSeats = [];
 
     function navigate(content) {
       document.getElementById("app").innerHTML = content;
@@ -160,6 +161,7 @@
     function seatSelection(time, screen) {
       state.show = {time, screen};
       state.seats = [];
+      bookedSeats = generateBookedSeats(); // random booked seats
       navigate(`
         <h2>Select Seats (${screen} - ${time})</h2>
         <div class="screen">SCREEN</div>
@@ -177,11 +179,20 @@
       `);
     }
 
+    function generateBookedSeats() {
+      let allSeats = [];
+      ["A","B","C","D","E","F"].forEach(r=>{
+        for(let i=1;i<=10;i++){ allSeats.push(r+i); }
+      });
+      return allSeats.filter(()=>Math.random()<0.1); // 10% booked
+    }
+
     function createSeats(row, price) {
       let html="";
       for(let i=1;i<=10;i++){
         let id=row+i;
-        html+=`<div class="seat" onclick="toggleSeat('${id}',${price},this)">${id}</div>`;
+        let booked=bookedSeats.includes(id)?"booked":"";
+        html+=`<div class="seat ${booked}" onclick="toggleSeat('${id}',${price},this)">${id}</div>`;
       }
       return html;
     }
@@ -224,21 +235,25 @@
       });
       let seatTotal=state.seats.reduce((sum,s)=>sum+s.price,0);
       state.total=seatTotal+snackTotal;
-      let qrData=`Movie: ${state.movie}, Show: ${state.show.time} ${state.show.screen}, Seats: ${state.seats.map(s=>s.id).join(",")}, Total: ${state.total} lators`;
+
+      let snacksList = Object.entries(state.snacks).map(([k,v])=>`${k} x${v}`).join(", ");
+      if(!snacksList) snacksList = "None";
+
+      let qrData=`Movie: ${state.movie}, Show: ${state.show.time} ${state.show.screen}, Seats: ${state.seats.map(s=>s.id).join(",")}, Snacks: ${snacksList}, Total: ${state.total} lators`;
       navigate(`
         <h2>Confirmation</h2>
         <p>Movie: ${state.movie}</p>
         <p>Show: ${state.show.time} - ${state.show.screen}</p>
         <p>Seats: ${state.seats.map(s=>s.id).join(", ")}</p>
+        <p>Snacks: ${snacksList}</p>
         <p>Total: ${state.total} lators</p>
         <canvas id="qr"></canvas>
         <br><button onclick="start()">Restart</button>
       `);
-      let qr=new QRious({element:document.getElementById("qr"),value:qrData,size:200});
+      new QRious({element:document.getElementById("qr"),value:qrData,size:200});
     }
 
     start();
   </script>
 </body>
 </html>
-
