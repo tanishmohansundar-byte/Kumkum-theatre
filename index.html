@@ -23,7 +23,7 @@
       border-radius: 12px; 
       box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
       width: 90%; 
-      max-width: 600px;
+      max-width: 650px;
     }
     h1, h2 { margin-bottom: 20px; }
     button { 
@@ -40,6 +40,35 @@
       width: fit-content;
     }
     button:hover { background: #ffaa00; }
+
+    /* 🎟 Date bar sticky */
+    .date-bar {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      margin: 20px 0;
+      padding: 10px;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 10;
+      border-bottom: 2px solid #ddd;
+    }
+    .date-btn {
+      flex: 0 0 auto;
+      padding: 12px 15px;
+      background: #ddd;
+      border-radius: 10px;
+      cursor: pointer;
+      border: none;
+      font-size: 14px;
+    }
+    .date-btn.active {
+      background: #ffcc00;
+      font-weight: bold;
+    }
+
+    /* 🎬 Seats */
     .seat-grid { 
       display: grid; 
       grid-template-columns: repeat(10, 1fr); 
@@ -64,8 +93,12 @@
       color: white; 
       border-radius: 8px; 
     }
+
+    /* 🍿 Snacks */
     .snack-item { margin: 10px 0; }
     input[type="number"] { width: 60px; padding: 5px; margin-left: 10px; }
+
+    /* 📱 QR */
     .qr-container { margin-top: 20px; }
   </style>
 </head>
@@ -88,10 +121,15 @@
       { title: "DD" }
     ];
 
-    // 📅 Dates
-    const dates = ["2025-08-31", "2025-09-01", "2025-09-02"];
+    // 📅 Generate 7 days dynamically
+    const today = new Date();
+    const dates = Array.from({length: 7}, (_, i) => {
+      const d = new Date();
+      d.setDate(today.getDate() + i);
+      return d;
+    });
 
-    // 🎟️ Shows (4 per movie per day with screens pre-allotted)
+    // 🎟️ Shows
     const showTemplates = [
       { time: "10:00 AM", screen: "Standard" },
       { time: "1:00 PM", screen: "3D" },
@@ -140,15 +178,19 @@
     }
 
     function loadDates() {
-      app.innerHTML = `<div class="container"><h2>Select Date</h2>`;
-      dates.forEach(d => {
-        app.innerHTML += `<button onclick="selectDate('${d}')">${d}</button>`;
+      app.innerHTML = `<div class="container"><h2>Select Date</h2><div class="date-bar">`;
+      dates.forEach((d, i) => {
+        const label = i === 0 ? "Today" : i === 1 ? "Tomorrow" : d.toDateString().slice(0, 10);
+        app.innerHTML += `<button class="date-btn ${i===0?"active":""}" onclick="selectDate(${i}, this)">${label}</button>`;
       });
-      app.innerHTML += `<button onclick="goBack()">⬅ Back</button></div>`;
+      app.innerHTML += `</div><button onclick="goBack()">⬅ Back</button></div>`;
+      selectedDate = dates[0].toDateString(); // default "Today"
     }
 
-    function selectDate(d) {
-      selectedDate = d;
+    function selectDate(i, el) {
+      selectedDate = dates[i].toDateString();
+      document.querySelectorAll(".date-btn").forEach(b => b.classList.remove("active"));
+      el.classList.add("active");
       navigate(loadMovies);
     }
 
@@ -184,19 +226,21 @@
       app.innerHTML += `<div class="screen">SCREEN</div>`;
       app.innerHTML += `<div class="seat-grid">`;
       for (let i = 1; i <= 40; i++) {
-        app.innerHTML += `<div class="seat" onclick="toggleSeat(${i}, this)">S${i}</div>`;
+        let price = i <= 20 ? 350 : 200;
+        app.innerHTML += `<div class="seat" onclick="toggleSeat(${i}, ${price}, this)">S${i}<br>${price}</div>`;
       }
       app.innerHTML += `</div>`;
       app.innerHTML += `<button onclick="navigate(loadSnacks)">Continue</button>`;
       app.innerHTML += `<button onclick="goBack()">⬅ Back</button></div>`;
     }
 
-    function toggleSeat(seat, el) {
-      if (selectedSeats.includes(seat)) {
-        selectedSeats = selectedSeats.filter(s => s !== seat);
+    function toggleSeat(seat, price, el) {
+      const index = selectedSeats.findIndex(s => s.num === seat);
+      if (index >= 0) {
+        selectedSeats.splice(index, 1);
         el.classList.remove("selected");
       } else {
-        selectedSeats.push(seat);
+        selectedSeats.push({ num: seat, price });
         el.classList.add("selected");
       }
     }
@@ -225,11 +269,7 @@
     }
 
     function loadConfirmation() {
-      let basePrice = 200;
-      if (["IMAX", "4DX", "ICE", "LUXE", "3D"].includes(selectedShow.screen)) {
-        basePrice += 370;
-      }
-      let seatTotal = basePrice * selectedSeats.length;
+      let seatTotal = selectedSeats.reduce((sum, s) => sum + s.price, 0);
 
       let snackTotal = 0;
       let snackList = "";
@@ -246,7 +286,7 @@
           <p><strong>Date:</strong> ${selectedDate}</p>
           <p><strong>Movie:</strong> ${selectedMovie.title}</p>
           <p><strong>Show:</strong> ${selectedShow.time} (${selectedShow.screen})</p>
-          <p><strong>Seats:</strong> ${selectedSeats.join(", ")}</p>
+          <p><strong>Seats:</strong> ${selectedSeats.map(s => `S${s.num} (${s.price})`).join(", ")}</p>
           <p><strong>Snacks:</strong> ${snackList || "None"}</p>
           <h3>Total: ${total} lators</h3>
           <div class="qr-container">
