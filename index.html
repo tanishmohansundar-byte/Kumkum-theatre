@@ -2,271 +2,240 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kumkum Theatre</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f2f2f7; color: #222; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-    .container { text-align: center; padding: 30px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); width: 90%; max-width: 650px; }
-    h1, h2 { margin-bottom: 20px; }
-    button { padding: 12px 20px; margin: 10px; border: none; border-radius: 8px; background: #ffcc00; font-size: 16px; cursor: pointer; display: block; margin-left: auto; margin-right: auto; width: fit-content; }
-    button:hover { background: #ffaa00; }
-
-    /* 🎟 Date bar sticky */
-    .date-bar { display: flex; gap: 10px; overflow-x: auto; margin: 20px 0; padding: 10px; position: sticky; top: 0; background: #fff; z-index: 10; border-bottom: 2px solid #ddd; }
-    .date-btn { flex: 0 0 auto; padding: 12px 15px; background: #ddd; border-radius: 10px; cursor: pointer; border: none; font-size: 14px; }
-    .date-btn.active { background: #ffcc00; font-weight: bold; }
-
-    /* 🎬 Seats */
-    .seat-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; justify-content: center; margin-top: 20px; }
-    .seat { padding: 10px; border-radius: 6px; border: 1px solid #333; cursor: pointer; background: #eee; text-align: center; }
-    .seat.selected { background: #4caf50; color: white; }
-    .premium { background: #d1c4e9; } /* top rows premium look */
-    .screen { width: 80%; margin: 0 auto 20px; padding: 10px; background: #333; color: white; border-radius: 8px; }
-
-    /* 🍿 Snacks */
-    .snack-item { margin: 10px 0; }
-    input[type="number"] { width: 60px; padding: 5px; margin-left: 10px; }
-
-    /* 📱 QR */
-    .qr-container { margin-top: 20px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff9db; /* faint yellow */
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+    h1, h2 {
+      margin-bottom: 20px;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      background: #ff9800;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #e68900;
+    }
+    .screen {
+      background: #ccc;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .seat-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+    }
+    .row-label {
+      width: 20px;
+      font-weight: bold;
+    }
+    .row-seats {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 5px;
+    }
+    .seat {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #333;
+      cursor: pointer;
+      background: #eee;
+      text-align: center;
+    }
+    .seat.selected {
+      background: #4caf50;
+      color: white;
+    }
+    .seat.booked {
+      background: #d32f2f;
+      color: white;
+      cursor: not-allowed;
+    }
+    .snacks {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    .snack-item {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .qr {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app" class="container"></div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <script>
-    const app = document.getElementById("app");
-
-    // 🎬 Movies
     const movies = [
-      { title: "Maruthuvar", shows: [
-        { time: "10:30 AM", screen: "Standard" },
-        { time: "2:00 PM", screen: "IMAX" },
-        { time: "6:00 PM", screen: "3D" },
-        { time: "9:30 PM", screen: "LUXE" }
-      ]},
-      { title: "Spy", shows: [
-        { time: "9:00 AM", screen: "Standard" },
-        { time: "12:30 PM", screen: "3D" },
-        { time: "5:15 PM", screen: "IMAX" },
-        { time: "8:45 PM", screen: "Standard" }
-      ]},
-      { title: "Jai Bhim", shows: [
-        { time: "11:00 AM", screen: "Standard" },
-        { time: "3:00 PM", screen: "IMAX" },
-        { time: "7:00 PM", screen: "4DX" },
-        { time: "10:30 PM", screen: "Standard" }
-      ]},
-      { title: "Naidus Padam", shows: [
-        { time: "9:15 AM", screen: "Standard" },
-        { time: "1:15 PM", screen: "3D" },
-        { time: "6:00 PM", screen: "LUXE" },
-        { time: "9:45 PM", screen: "Standard" }
-      ]},
-      { title: "Detective", shows: [
-        { time: "10:00 AM", screen: "IMAX" },
-        { time: "2:00 PM", screen: "Standard" },
-        { time: "5:30 PM", screen: "3D" },
-        { time: "9:15 PM", screen: "4DX" }
-      ]},
-      { title: "Johnson Ducknail", shows: [
-        { time: "9:45 AM", screen: "Standard" },
-        { time: "1:00 PM", screen: "Standard" },
-        { time: "4:30 PM", screen: "3D" },
-        { time: "8:30 PM", screen: "IMAX" }
-      ]},
-      { title: "Mixed Emotions", shows: [
-        { time: "11:15 AM", screen: "Standard" },
-        { time: "2:45 PM", screen: "3D" },
-        { time: "6:15 PM", screen: "Standard" },
-        { time: "10:00 PM", screen: "IMAX" }
-      ]},
-      { title: "Sorus", shows: [
-        { time: "9:30 AM", screen: "Standard" },
-        { time: "1:30 PM", screen: "IMAX" },
-        { time: "5:00 PM", screen: "4DX" },
-        { time: "9:00 PM", screen: "Standard" }
-      ]},
-      { title: "DD", shows: [
-        { time: "10:00 AM", screen: "3D" },
-        { time: "2:00 PM", screen: "Standard" },
-        { time: "6:00 PM", screen: "IMAX" },
-        { time: "9:30 PM", screen: "LUXE" }
-      ]}
+      "MARUTHUVAR","HIT","DOOR","DOOR2","SPY",
+      "BISTER","THOZHAM","HOSPA","AIM","ONE LIFE",
+      "HARBOUR","AUTOKARAN","USPA","USPA2","USPA3","USPA4","HOSARANGA","HOSARANGA2","HOSARANGA3","MAGADI",
+      "MUJAHIDEEN","MUJAHIDEEN2","MUJAHIDEEN3",
+      "THALAIVA","ALLA RETURNS",
+      "FERNANDEZ","VANAKKAM MADURAI",
+      "DEVIL","JAI BHIM","DETECTIVE","NAIDUS PADAM"
     ];
 
-    // 📅 Generate 7 days dynamically
-    const today = new Date();
-    const dates = Array.from({length: 7}, (_, i) => {
-      const d = new Date();
-      d.setDate(today.getDate() + i);
-      return d;
-    });
+    const shows = {
+      "MARUTHUVAR": [{time:"12:00", screen:"Standard"}, {time:"15:00", screen:"IMAX"}, {time:"18:00", screen:"3D"}, {time:"21:00", screen:"Standard"}],
+      "HIT": [{time:"13:00", screen:"Standard"}, {time:"16:00", screen:"LUXE"}, {time:"19:00", screen:"4DX"}, {time:"22:00", screen:"Standard"}],
+      "SPY": [{time:"11:00", screen:"ICE"}, {time:"14:00", screen:"IMAX"}, {time:"17:00", screen:"Standard"}, {time:"20:00", screen:"3D"}],
+      "JAI BHIM": [{time:"10:00", screen:"Standard"}, {time:"13:00", screen:"IMAX"}, {time:"16:00", screen:"Standard"}, {time:"19:00", screen:"4DX"}],
+      "NAIDUS PADAM": [{time:"12:30", screen:"Standard"}, {time:"15:30", screen:"Standard"}, {time:"18:30", screen:"ICE"}, {time:"21:30", screen:"3D"}],
+      // Default for all others
+    };
 
-    const beverages = [
-      { name: "Popcorn", price: 100 },
-      { name: "Coca Cola", price: 80 },
-      { name: "Pepsi", price: 80 },
-      { name: "French Fries", price: 120 },
-      { name: "Nachos", price: 150 },
-      { name: "Magnum Ice Cream", price: 200 }
-    ];
+    let state = {
+      movie: null,
+      show: null,
+      seats: [],
+      snacks: {},
+      total: 0
+    };
 
-    let selectedDate = null;
-    let selectedMovie = null;
-    let selectedShow = null;
-    let selectedSeats = [];
-    let selectedSnacks = {};
-    let historyStack = [];
-
-    function navigate(screenFn) {
-      historyStack.push(screenFn);
-      screenFn();
+    function navigate(content) {
+      document.getElementById("app").innerHTML = content;
     }
 
-    function goBack() {
-      historyStack.pop();
-      if (historyStack.length > 0) {
-        historyStack[historyStack.length - 1]();
-      } else {
-        loadWelcome();
-      }
+    function start() {
+      navigate(`
+        <h1>Welcome to Kumkum Theatre</h1>
+        <button onclick="chooseMovie()">Continue</button>
+      `);
     }
 
-    function loadWelcome() {
-      historyStack = [];
-      app.innerHTML = `
-        <div class="container">
-          <h1>Welcome to Kumkum Theatre 🎥</h1>
-          <button onclick="navigate(loadDates)">Book Now</button>
+    function chooseMovie() {
+      navigate("<h2>Choose Movie</h2>" + movies.map(m => 
+        `<button onclick="chooseShow('${m}')">${m}</button>`
+      ).join(""));
+    }
+
+    function chooseShow(movie) {
+      state.movie = movie;
+      const movieShows = shows[movie] || [
+        {time:"12:00", screen:"Standard"},
+        {time:"15:00", screen:"Standard"},
+        {time:"18:00", screen:"Standard"},
+        {time:"21:00", screen:"Standard"}
+      ];
+      navigate("<h2>Select Show for "+movie+"</h2>" + movieShows.map(s =>
+        `<button onclick="seatSelection('${s.time}','${s.screen}')">${s.time} - ${s.screen}</button>`
+      ).join(""));
+    }
+
+    function seatSelection(time, screen) {
+      state.show = {time, screen};
+      state.seats = [];
+      navigate(`
+        <h2>Select Seats (${screen} - ${time})</h2>
+        <div class="screen">SCREEN</div>
+        <div class="seat-layout">
+          ${["A","B","C","D","E","F"].map(r => `
+            <div class="row">
+              <span class="row-label">${r}</span>
+              <div class="row-seats">
+                ${createSeats(r, r=="A"||r=="B"?350:200)}
+              </div>
+            </div>
+          `).join("")}
         </div>
-      `;
+        <button onclick="chooseSnacks()">Continue</button>
+      `);
     }
 
-    function loadDates() {
-      app.innerHTML = `<div class="container"><h2>Select Date</h2><div class="date-bar">`;
-      dates.forEach((d, i) => {
-        const label = i === 0 ? "Today" : i === 1 ? "Tomorrow" : d.toDateString().slice(0, 10);
-        app.innerHTML += `<button class="date-btn ${i===0?"active":""}" onclick="selectDate(${i}, this)">${label}</button>`;
-      });
-      app.innerHTML += `</div><button onclick="goBack()">⬅ Back</button></div>`;
-      selectedDate = dates[0].toDateString(); // default "Today"
-    }
-
-    function selectDate(i, el) {
-      selectedDate = dates[i].toDateString();
-      document.querySelectorAll(".date-btn").forEach(b => b.classList.remove("active"));
-      el.classList.add("active");
-      navigate(loadMovies);
-    }
-
-    function loadMovies() {
-      app.innerHTML = `<div class="container"><h2>Select Movie</h2>`;
-      movies.forEach((m, i) => {
-        app.innerHTML += `<button onclick="selectMovie(${i})">${m.title}</button>`;
-      });
-      app.innerHTML += `<button onclick="goBack()">⬅ Back</button></div>`;
-    }
-
-    function selectMovie(i) {
-      selectedMovie = movies[i];
-      navigate(loadShowTimings);
-    }
-
-    function loadShowTimings() {
-      app.innerHTML = `<div class="container"><h2>Shows for ${selectedMovie.title} on ${selectedDate}</h2>`;
-      selectedMovie.shows.forEach((s, i) => {
-        app.innerHTML += `<button onclick="selectShow(${i})">${s.time} - ${s.screen}</button>`;
-      });
-      app.innerHTML += `<button onclick="goBack()">⬅ Back</button></div>`;
-    }
-
-    function selectShow(i) {
-      selectedShow = selectedMovie.shows[i];
-      navigate(loadSeatSelection);
-    }
-
-    function loadSeatSelection() {
-      selectedSeats = [];
-      app.innerHTML = `<div class="container"><h2>Select Seats (${selectedShow.screen})</h2>`;
-      app.innerHTML += `<div class="screen">SCREEN</div>`;
-      app.innerHTML += `<div class="seat-grid">`;
-      for (let i = 1; i <= 40; i++) {
-        let price = i <= 20 ? 350 : 200;
-        app.innerHTML += `<div class="seat ${i<=20?"premium":""}" onclick="toggleSeat(${i}, ${price}, this)">S${i}<br>${price}</div>`;
+    function createSeats(row, price) {
+      let html="";
+      for(let i=1;i<=10;i++){
+        let id=row+i;
+        html+=`<div class="seat" onclick="toggleSeat('${id}',${price},this)">${id}</div>`;
       }
-      app.innerHTML += `</div>`;
-      app.innerHTML += `<button onclick="navigate(loadSnacks)">Continue</button>`;
-      app.innerHTML += `<button onclick="goBack()">⬅ Back</button></div>`;
+      return html;
     }
 
-    function toggleSeat(seat, price, el) {
-      const index = selectedSeats.findIndex(s => s.num === seat);
-      if (index >= 0) {
-        selectedSeats.splice(index, 1);
+    function toggleSeat(id, price, el){
+      if(el.classList.contains("booked")) return;
+      if(el.classList.contains("selected")){
         el.classList.remove("selected");
+        state.seats = state.seats.filter(s=>s.id!==id);
       } else {
-        selectedSeats.push({ num: seat, price });
         el.classList.add("selected");
+        state.seats.push({id, price});
       }
     }
 
-    function loadSnacks() {
-      selectedSnacks = {};
-      app.innerHTML = `<div class="container"><h2>Snacks & Beverages</h2>`;
-      beverages.forEach((b, i) => {
-        app.innerHTML += `
-          <div class="snack-item">
-            ${b.name} (${b.price} lators) 
-            <input type="number" id="snack-${i}" min="0" value="0" onchange="updateSnack(${i}, this.value)">
-          </div>
-        `;
-      });
-      app.innerHTML += `<button onclick="navigate(loadConfirmation)">Proceed to Confirmation</button>`;
-      app.innerHTML += `<button onclick="goBack()">⬅ Back</button></div>`;
-    }
-
-    function updateSnack(i, qty) {
-      if (qty > 0) {
-        selectedSnacks[beverages[i].name] = { ...beverages[i], qty: parseInt(qty) };
-      } else {
-        delete selectedSnacks[beverages[i].name];
-      }
-    }
-
-    function loadConfirmation() {
-      let seatTotal = selectedSeats.reduce((sum, s) => sum + s.price, 0);
-
-      let snackTotal = 0;
-      let snackList = "";
-      Object.values(selectedSnacks).forEach(s => {
-        snackTotal += s.price * s.qty;
-        snackList += `${s.name} x${s.qty}, `;
-      });
-
-      let total = seatTotal + snackTotal;
-
-      app.innerHTML = `
-        <div class="container">
-          <h2>Booking Confirmation 🎟️</h2>
-          <p><strong>Date:</strong> ${selectedDate}</p>
-          <p><strong>Movie:</strong> ${selectedMovie.title}</p>
-          <p><strong>Show:</strong> ${selectedShow.time} (${selectedShow.screen})</p>
-          <p><strong>Seats:</strong> ${selectedSeats.map(s => `S${s.num} (${s.price})`).join(", ")}</p>
-          <p><strong>Snacks:</strong> ${snackList || "None"}</p>
-          <h3>Total: ${total} lators</h3>
-          <div class="qr-container">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-              "Kumkum Theatre - " + selectedMovie.title + " - " + selectedShow.time
-            )}" alt="QR Code"/>
-          </div>
-          <p>Scan QR code at theatre entrance!</p>
-          <button onclick="loadWelcome()">🔄 Restart</button>
+    function chooseSnacks(){
+      navigate(`
+        <h2>Select Snacks</h2>
+        <div class="snacks">
+          ${["Popcorn","Coca Cola","Pepsi","French Fries","Nachos","Magnum Ice Cream"].map(item=>`
+            <div class="snack-item">
+              <label>${item}</label>
+              <input type="number" min="0" value="0" id="snack-${item}">
+            </div>
+          `).join("")}
         </div>
-      `;
+        <button onclick="confirmBooking()">Confirm</button>
+      `);
     }
 
-    loadWelcome();
+    function confirmBooking(){
+      let snackTotal=0;
+      state.snacks={};
+      ["Popcorn","Coca Cola","Pepsi","French Fries","Nachos","Magnum Ice Cream"].forEach(item=>{
+        let qty=parseInt(document.getElementById("snack-"+item).value)||0;
+        if(qty>0){
+          state.snacks[item]=qty;
+          snackTotal+=qty*100;
+        }
+      });
+      let seatTotal=state.seats.reduce((sum,s)=>sum+s.price,0);
+      state.total=seatTotal+snackTotal;
+      let qrData=`Movie: ${state.movie}, Show: ${state.show.time} ${state.show.screen}, Seats: ${state.seats.map(s=>s.id).join(",")}, Total: ${state.total} lators`;
+      navigate(`
+        <h2>Confirmation</h2>
+        <p>Movie: ${state.movie}</p>
+        <p>Show: ${state.show.time} - ${state.show.screen}</p>
+        <p>Seats: ${state.seats.map(s=>s.id).join(", ")}</p>
+        <p>Total: ${state.total} lators</p>
+        <canvas id="qr"></canvas>
+        <br><button onclick="start()">Restart</button>
+      `);
+      let qr=new QRious({element:document.getElementById("qr"),value:qrData,size:200});
+    }
+
+    start();
   </script>
 </body>
 </html>
