@@ -2,235 +2,266 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kumkum Theatre</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #fff9db;
-      color: #333;
-      overflow-y: scroll;
+      margin: 0;
+      padding: 0;
+      background: #fff8dc;
+      color: #222;
     }
-    ::-webkit-scrollbar { width: 10px; }
-    ::-webkit-scrollbar-thumb { background: darkblue; border-radius: 5px; }
-
-    .screen { display: none; padding: 20px; }
-    .active { display: block; }
-
-    .center { text-align: center; margin-top: 20vh; }
+    .container {
+      text-align: center;
+      padding: 30px;
+    }
+    h1, h2 {
+      margin-bottom: 20px;
+    }
     button {
-      padding: 10px 20px; margin: 10px;
-      border: none; border-radius: 8px;
-      background: #333; color: white;
+      padding: 12px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #ffcc00;
+      font-size: 16px;
       cursor: pointer;
+      transition: 0.3s;
     }
-    button:hover { background: #555; }
+    button:hover { background: #ffaa00; }
 
-    .movies { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-    .movie-card {
-      width: 180px; border: 1px solid #ccc; border-radius: 10px;
-      overflow: hidden; cursor: pointer; text-align: center;
+    /* Seat screen themes */
+    .seat-screen-standard { background: lightblue; }
+    .seat-screen-ice { background: #39ff14; color: black; }
+    .seat-screen-4dx { background: green; color: white; }
+    .seat-screen-imax { background: darkblue; color: white; }
+    .seat-screen-3d { background: red; color: white; }
+    .seat-screen-luxe { background: goldenrod; color: black; }
+
+    /* Posters */
+    .movie-poster {
+      width: 180px;
+      height: 260px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
-    .movie-card img { width: 100%; height: 250px; object-fit: cover; }
-
-    .timings, .screens, .seats, .beverages { text-align: center; margin-top: 20px; }
-    .seat-grid { display: grid; grid-template-columns: repeat(10, 40px); gap: 5px; justify-content: center; }
-    .seat {
-      width: 40px; height: 40px; border: 1px solid #333; border-radius: 5px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
+    .poster-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
     }
-    .seat.selected { background: green; color: white; }
+    .poster-card {
+      text-align: center;
+    }
 
-    .standard { background: lightblue; }
-    .ice { background: #39ff14; color: black; }
-    .imax { background: darkblue; color: white; }
-    .lux { background: gold; }
-    .screen3d { background: red; color: white; }
-    .screen4dx { background: green; color: white; }
-
-    .summary { font-size: 18px; line-height: 1.5; }
+    .qr-container { margin-top: 20px; }
   </style>
 </head>
 <body>
+  <div id="app"></div>
 
-  <!-- Screen 1 -->
-  <div id="screen1" class="screen active center">
-    <h1>Welcome to Kumkum Theatre</h1>
-    <button onclick="nextScreen(2)">Continue</button>
-  </div>
+  <script>
+    const app = document.getElementById("app");
 
-  <!-- Screen 2: Movie selection -->
-  <div id="screen2" class="screen">
-    <h2 class="center">Choose Your Movie</h2>
-    <div class="movies" id="movieList"></div>
-    <div class="center"><button onclick="backScreen(1)">Back</button></div>
-  </div>
+    // 🎬 Movies
+    const movies = [
+      {
+        title: "Maruthuvar", poster: "https://m.media-amazon.com/images/I/81Q9z3g+7eL._AC_UF894,1000_QL80_.jpg",
+        shows: [
+          { time: "10:00 AM", screen: "Standard" },
+          { time: "1:00 PM", screen: "3D" },
+          { time: "4:00 PM", screen: "IMAX" },
+          { time: "8:00 PM", screen: "LUXE" }
+        ]
+      },
+      {
+        title: "Spy", poster: "https://m.media-amazon.com/images/I/81u6mmsH0IL._AC_UF894,1000_QL80_.jpg",
+        shows: [
+          { time: "9:00 AM", screen: "Standard" },
+          { time: "12:30 PM", screen: "4DX" },
+          { time: "5:00 PM", screen: "ICE" },
+          { time: "9:30 PM", screen: "IMAX" }
+        ]
+      },
+      {
+        title: "Jai Bhim", poster: "https://upload.wikimedia.org/wikipedia/en/5/59/Jai_Bhim_film_poster.jpg",
+        shows: [
+          { time: "11:00 AM", screen: "Standard" },
+          { time: "2:00 PM", screen: "3D" },
+          { time: "6:00 PM", screen: "4DX" },
+          { time: "10:00 PM", screen: "IMAX" }
+        ]
+      },
+      {
+        title: "Naidus Padam", poster: "https://m.media-amazon.com/images/I/81Z7Vyd4C5L._AC_UF894,1000_QL80_.jpg",
+        shows: [
+          { time: "9:30 AM", screen: "Standard" },
+          { time: "1:00 PM", screen: "ICE" },
+          { time: "4:30 PM", screen: "Standard" },
+          { time: "8:30 PM", screen: "3D" }
+        ]
+      },
+      {
+        title: "Detective", poster: "https://upload.wikimedia.org/wikipedia/en/a/a5/Detective_film_poster.jpg",
+        shows: [
+          { time: "10:30 AM", screen: "Standard" },
+          { time: "2:30 PM", screen: "3D" },
+          { time: "6:30 PM", screen: "IMAX" },
+          { time: "9:45 PM", screen: "LUXE" }
+        ]
+      },
+      {
+        title: "Johnson Ducknail", poster: "https://via.placeholder.com/180x260?text=Johnson+Ducknail",
+        shows: [
+          { time: "9:45 AM", screen: "Standard" },
+          { time: "1:15 PM", screen: "3D" },
+          { time: "6:00 PM", screen: "ICE" },
+          { time: "10:15 PM", screen: "4DX" }
+        ]
+      }
+    ];
 
-  <!-- Screen 3: Timings & Screens -->
-  <div id="screen3" class="screen">
-    <h2 class="center" id="selectedMovie"></h2>
-    <div class="timings" id="timingOptions"></div>
-    <div class="screens" id="screenOptions"></div>
-    <div class="center">
-      <button onclick="backScreen(2)">Back</button>
-      <button onclick="nextScreen(4)">Continue</button>
-    </div>
-  </div>
+    const beverages = [
+      { name: "Popcorn", price: 100 },
+      { name: "Coca Cola", price: 80 },
+      { name: "Pepsi", price: 80 },
+      { name: "French Fries", price: 120 },
+      { name: "Nachos", price: 150 },
+      { name: "Magnum Ice Cream", price: 200 }
+    ];
 
-  <!-- Screen 4: Tickets & Seats -->
-  <div id="screen4" class="screen">
-    <h2 class="center">Choose Your Seats</h2>
-    <div class="center">
-      Number of People: <input type="number" id="ticketCount" min="1" max="10" value="1">
-      <button onclick="generateSeats()">Load Seats</button>
-    </div>
-    <div class="seats" id="seatingArea"></div>
-    <div class="center">
-      <button onclick="backScreen(3)">Back</button>
-      <button onclick="nextScreen(5)">Continue</button>
-    </div>
-  </div>
+    let selectedMovie = null;
+    let selectedShow = null;
+    let selectedSeats = [];
+    let selectedSnacks = [];
+    let historyStack = [];
 
-  <!-- Screen 5: Beverages -->
-  <div id="screen5" class="screen">
-    <h2 class="center">Do you want Beverages?</h2>
-    <div class="center">
-      <label><input type="checkbox" value="Popcorn" data-price="50"> Popcorn (50)</label><br>
-      <label><input type="checkbox" value="Coca Cola" data-price="40"> Coca Cola (40)</label><br>
-      <label><input type="checkbox" value="Pepsi" data-price="40"> Pepsi (40)</label><br>
-      <label><input type="checkbox" value="French Fries" data-price="70"> French Fries (70)</label><br>
-      <label><input type="checkbox" value="Nachos" data-price="80"> Nachos (80)</label><br>
-      <label><input type="checkbox" value="Magnum Ice Cream" data-price="120"> Magnum Ice Cream (120)</label>
-    </div>
-    <div class="center">
-      <button onclick="backScreen(4)">Back</button>
-      <button onclick="nextScreen(6)">Continue</button>
-    </div>
-  </div>
+    function navigate(screenFn) {
+      historyStack.push(screenFn);
+      screenFn();
+    }
 
-  <!-- Screen 6: Confirmation -->
-  <div id="screen6" class="screen">
-    <h2 class="center">Booking Confirmation</h2>
-    <div class="summary" id="summary"></div>
-    <div class="center">
-      <button onclick="backScreen(5)">Back</button>
-    </div>
-  </div>
-
-<script>
-  const movies = [
-    {title:"MARUTHUVAR", poster:"https://via.placeholder.com/180x250?text=Maruthuvar", timings:["10:00","13:00","16:00","19:00"]},
-    {title:"HIT", poster:"https://via.placeholder.com/180x250?text=Hit", timings:["11:00","14:00","18:00","21:00"]},
-    {title:"DOOR", poster:"https://via.placeholder.com/180x250?text=Door", timings:["09:00","12:00","15:00","20:00"]},
-    {title:"SPY", poster:"https://via.placeholder.com/180x250?text=Spy", timings:["10:30","13:30","17:30","20:30"]},
-    {title:"USPA", poster:"https://via.placeholder.com/180x250?text=Uspa", timings:["10:00","12:30","16:00","20:00"]},
-    {title:"HOSARANGA", poster:"https://via.placeholder.com/180x250?text=Hosaranga", timings:["11:00","14:00","17:00","21:00"]},
-    {title:"JOHNSON DUCKNAIL", poster:"https://via.placeholder.com/180x250?text=Johnson+Ducknail", timings:["09:30","12:30","15:30","19:30"]},
-    {title:"MIXED EMOTIONS", poster:"https://via.placeholder.com/180x250?text=Mixed+Emotions", timings:["10:15","13:15","17:15","21:15"]},
-    {title:"JAI BHIM", poster:"https://via.placeholder.com/180x250?text=Jai+Bhim", timings:["09:00","12:00","15:00","19:00"]},
-    {title:"DETECTIVE", poster:"https://via.placeholder.com/180x250?text=Detective", timings:["10:45","13:45","16:45","20:45"]},
-    {title:"NAIDUS PADAM", poster:"https://via.placeholder.com/180x250?text=Naidus+Padam", timings:["09:15","12:15","15:15","19:15"]}
-  ];
-
-  let booking = { movie:"", timing:"", screen:"", seats:[], price:0, beverages:[] };
-
-  function nextScreen(num){
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById("screen"+num).classList.add("active");
-  }
-  function backScreen(num){
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById("screen"+num).classList.add("active");
-  }
-
-  // Populate movie list
-  const movieList=document.getElementById("movieList");
-  movies.forEach((m,i)=>{
-    const div=document.createElement("div");
-    div.className="movie-card";
-    div.innerHTML=`<img src="${m.poster}"><h4>${m.title}</h4>`;
-    div.onclick=()=>selectMovie(i);
-    movieList.appendChild(div);
-  });
-
-  function selectMovie(index){
-    booking.movie=movies[index].title;
-    document.getElementById("selectedMovie").innerText=booking.movie;
-    let tHTML="";
-    movies[index].timings.forEach(t=>tHTML+=`<button onclick="chooseTiming('${t}')">${t}</button>`);
-    document.getElementById("timingOptions").innerHTML=tHTML;
-
-    document.getElementById("screenOptions").innerHTML=`
-      <button class="standard" onclick="chooseScreen('Standard')">Standard</button>
-      <button class="ice" onclick="chooseScreen('ICE')">ICE</button>
-      <button class="imax" onclick="chooseScreen('IMAX')">IMAX</button>
-      <button class="screen4dx" onclick="chooseScreen('4DX')">4DX</button>
-      <button class="screen3d" onclick="chooseScreen('3D')">3D</button>
-      <button class="lux" onclick="chooseScreen('Luxe')">Luxe</button>`;
-    nextScreen(3);
-  }
-  function chooseTiming(t){ booking.timing=t; }
-  function chooseScreen(s){ booking.screen=s; }
-
-  function generateSeats(){
-    const count=document.getElementById("ticketCount").value;
-    const area=document.getElementById("seatingArea");
-    area.innerHTML="";
-    booking.seats=[];
-    for(let r=1;r<=10;r++){
-      for(let c=1;c<=10;c++){
-        const seat=document.createElement("div");
-        seat.className="seat";
-        seat.innerText=r+"-"+c;
-        seat.onclick=()=>{
-          if(seat.classList.contains("selected")){
-            seat.classList.remove("selected");
-            booking.seats=booking.seats.filter(s=>s!==seat.innerText);
-          }else if(booking.seats.length<count){
-            seat.classList.add("selected");
-            booking.seats.push(seat.innerText);
-          }else alert("You can only select "+count+" seats");
-        };
-        area.appendChild(seat);
+    function goBack() {
+      historyStack.pop();
+      if (historyStack.length > 0) {
+        historyStack[historyStack.length - 1]();
+      } else {
+        loadWelcome();
       }
     }
-  }
 
-  function calculatePrice(){
-    let base=200;
-    if(["SPY","AIM","MAGADI"].includes(booking.movie)) base=300;
-    let total=base*booking.seats.length;
-    booking.seats.forEach(s=>{
-      let row=parseInt(s.split("-")[0]);
-      if(row===10) total+=50; 
-      if(row===5) total+=100;
-    });
-    if(booking.screen!=="Standard") total+=370*booking.seats.length;
-    booking.beverages=[];
-    document.querySelectorAll("#screen5 input:checked").forEach(ch=>{
-      booking.beverages.push(ch.value);
-      total+=parseInt(ch.dataset.price);
-    });
-    booking.price=total;
-  }
+    function loadWelcome() {
+      historyStack = [];
+      app.className = "";
+      app.innerHTML = `
+        <div class="container">
+          <h1>Welcome to Kumkum Theatre 🎥</h1>
+          <button onclick="navigate(loadMovies)">Continue</button>
+        </div>
+      `;
+    }
 
-  function nextScreen(num){
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById("screen"+num).classList.add("active");
-    if(num===6){ showSummary(); }
-  }
+    function loadMovies() {
+      app.className = "";
+      app.innerHTML = `<div class="container"><h2>Select Your Movie</h2><div class="poster-container"></div><button onclick="goBack()">⬅ Back</button></div>`;
+      const container = document.querySelector(".poster-container");
+      movies.forEach((m, i) => {
+        container.innerHTML += `
+          <div class="poster-card">
+            <img src="${m.poster}" alt="${m.title}" class="movie-poster"/>
+            <p>${m.title}</p>
+            <button onclick="selectMovie(${i})">Select</button>
+          </div>
+        `;
+      });
+    }
 
-  function showSummary(){
-    calculatePrice();
-    document.getElementById("summary").innerHTML=`
-      <b>Movie:</b> ${booking.movie}<br>
-      <b>Timing:</b> ${booking.timing}<br>
-      <b>Screen:</b> ${booking.screen}<br>
-      <b>Seats:</b> ${booking.seats.join(", ")}<br>
-      <b>Beverages:</b> ${booking.beverages.join(", ") || "None"}<br>
-      <b>Total Price:</b> ${booking.price} lators`;
-  }
-</script>
+    function selectMovie(i) {
+      selectedMovie = movies[i];
+      navigate(loadShowTimings);
+    }
+
+    function loadShowTimings() {
+      app.className = "";
+      app.innerHTML = `<div class="container"><h2>Choose Show for ${selectedMovie.title}</h2>`;
+      selectedMovie.shows.forEach((s, i) => {
+        app.innerHTML += `<button onclick="selectShow(${i})">${s.time} - ${s.screen}</button>`;
+      });
+      app.innerHTML += `<br><button onclick="goBack()">⬅ Back</button></div>`;
+    }
+
+    function selectShow(i) {
+      selectedShow = selectedMovie.shows[i];
+      navigate(loadSeatSelection);
+    }
+
+    function loadSeatSelection() {
+      const screenType = selectedShow.screen.toLowerCase();
+      app.className = `seat-screen-${screenType}`;
+      app.innerHTML = `<div class="container"><h2>Select Your Seats (${selectedShow.screen})</h2>`;
+      for (let i = 1; i <= 20; i++) {
+        app.innerHTML += `<button onclick="toggleSeat(${i})">Seat ${i}</button>`;
+      }
+      app.innerHTML += `<br><button onclick="navigate(loadSnacks)">Continue</button>`;
+      app.innerHTML += `<br><button onclick="goBack()">⬅ Back</button></div>`;
+    }
+
+    function toggleSeat(seat) {
+      if (selectedSeats.includes(seat)) {
+        selectedSeats = selectedSeats.filter(s => s !== seat);
+      } else {
+        selectedSeats.push(seat);
+      }
+    }
+
+    function loadSnacks() {
+      app.className = "";
+      app.innerHTML = `<div class="container"><h2>Snacks & Beverages</h2>`;
+      beverages.forEach((b, i) => {
+        app.innerHTML += `<button onclick="toggleSnack(${i})">${b.name} - ${b.price} lators</button>`;
+      });
+      app.innerHTML += `<br><button onclick="navigate(loadConfirmation)">Proceed to Confirmation</button>`;
+      app.innerHTML += `<br><button onclick="goBack()">⬅ Back</button></div>`;
+    }
+
+    function toggleSnack(i) {
+      if (selectedSnacks.includes(beverages[i])) {
+        selectedSnacks = selectedSnacks.filter(s => s !== beverages[i]);
+      } else {
+        selectedSnacks.push(beverages[i]);
+      }
+    }
+
+    function loadConfirmation() {
+      app.className = "";
+      let basePrice = 200;
+      if (["IMAX", "4DX", "ICE", "LUXE", "3D"].includes(selectedShow.screen)) {
+        basePrice += 370;
+      }
+      let total = basePrice * selectedSeats.length;
+      selectedSnacks.forEach(s => total += s.price);
+
+      app.innerHTML = `
+        <div class="container">
+          <h2>Booking Confirmation 🎟️</h2>
+          <p><strong>Movie:</strong> ${selectedMovie.title}</p>
+          <p><strong>Show:</strong> ${selectedShow.time} (${selectedShow.screen})</p>
+          <p><strong>Seats:</strong> ${selectedSeats.join(", ")}</p>
+          <p><strong>Snacks:</strong> ${selectedSnacks.map(s => s.name).join(", ") || "None"}</p>
+          <h3>Total: ${total} lators</h3>
+          <div class="qr-container">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent("Kumkum Theatre Booking - " + selectedMovie.title)}" alt="QR Code"/>
+          </div>
+          <p>Scan QR code at theatre entrance!</p>
+          <button onclick="goBack()">⬅ Back</button>
+        </div>
+      `;
+    }
+
+    loadWelcome();
+  </script>
 </body>
 </html>
