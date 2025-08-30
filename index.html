@@ -5,15 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kumkum Theatre</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #fff; color: #222; }
-    .container { text-align: center; padding: 30px; }
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      background: #f2f2f7; 
+      color: #222; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+    }
+    .container { 
+      text-align: center; 
+      padding: 30px; 
+      background: #fff; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+      width: 90%; 
+      max-width: 600px;
+    }
     h1, h2 { margin-bottom: 20px; }
-    button { padding: 12px 20px; margin: 8px; border: none; border-radius: 8px; background: #ffcc00; font-size: 16px; cursor: pointer; }
+    button { 
+      padding: 12px 20px; 
+      margin: 10px; 
+      border: none; 
+      border-radius: 8px; 
+      background: #ffcc00; 
+      font-size: 16px; 
+      cursor: pointer; 
+      display: block; 
+      margin-left: auto; 
+      margin-right: auto; 
+      width: fit-content;
+    }
     button:hover { background: #ffaa00; }
-    .seat-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; justify-content: center; margin-top: 20px; }
-    .seat { padding: 10px; border-radius: 6px; border: 1px solid #333; cursor: pointer; background: #eee; }
+    .seat-grid { 
+      display: grid; 
+      grid-template-columns: repeat(10, 1fr); 
+      gap: 5px; 
+      justify-content: center; 
+      margin-top: 20px; 
+    }
+    .seat { 
+      padding: 10px; 
+      border-radius: 6px; 
+      border: 1px solid #333; 
+      cursor: pointer; 
+      background: #eee; 
+      text-align: center;
+    }
     .seat.selected { background: #4caf50; color: white; }
-    .screen { width: 80%; margin: 0 auto 20px; padding: 10px; background: #333; color: white; border-radius: 8px; }
+    .screen { 
+      width: 80%; 
+      margin: 0 auto 20px; 
+      padding: 10px; 
+      background: #333; 
+      color: white; 
+      border-radius: 8px; 
+    }
     .snack-item { margin: 10px 0; }
     input[type="number"] { width: 60px; padding: 5px; margin-left: 10px; }
     .qr-container { margin-top: 20px; }
@@ -32,7 +82,10 @@
       { title: "Jai Bhim" },
       { title: "Naidus Padam" },
       { title: "Detective" },
-      { title: "Johnson Ducknail" }
+      { title: "Johnson Ducknail" },
+      { title: "Mixed Emotions" },
+      { title: "Sorus" },
+      { title: "DD" }
     ];
 
     // 📅 Dates
@@ -91,7 +144,7 @@
       dates.forEach(d => {
         app.innerHTML += `<button onclick="selectDate('${d}')">${d}</button>`;
       });
-      app.innerHTML += `<br><button onclick="goBack()">⬅ Back</button></div>`;
+      app.innerHTML += `<button onclick="goBack()">⬅ Back</button></div>`;
     }
 
     function selectDate(d) {
@@ -104,7 +157,7 @@
       movies.forEach((m, i) => {
         app.innerHTML += `<button onclick="selectMovie(${i})">${m.title}</button>`;
       });
-      app.innerHTML += `<br><button onclick="goBack()">⬅ Back</button></div>`;
+      app.innerHTML += `<button onclick="goBack()">⬅ Back</button></div>`;
     }
 
     function selectMovie(i) {
@@ -117,7 +170,7 @@
       showTemplates.forEach((s, i) => {
         app.innerHTML += `<button onclick="selectShow(${i})">${s.time} - ${s.screen}</button>`;
       });
-      app.innerHTML += `<br><button onclick="goBack()">⬅ Back</button></div>`;
+      app.innerHTML += `<button onclick="goBack()">⬅ Back</button></div>`;
     }
 
     function selectShow(i) {
@@ -134,8 +187,8 @@
         app.innerHTML += `<div class="seat" onclick="toggleSeat(${i}, this)">S${i}</div>`;
       }
       app.innerHTML += `</div>`;
-      app.innerHTML += `<br><button onclick="navigate(loadSnacks)">Continue</button>`;
-      app.innerHTML += `<br><button onclick="goBack()">⬅ Back</button></div>`;
+      app.innerHTML += `<button onclick="navigate(loadSnacks)">Continue</button>`;
+      app.innerHTML += `<button onclick="goBack()">⬅ Back</button></div>`;
     }
 
     function toggleSeat(seat, el) {
@@ -159,8 +212,8 @@
           </div>
         `;
       });
-      app.innerHTML += `<br><button onclick="navigate(loadConfirmation)">Proceed to Confirmation</button>`;
-      app.innerHTML += `<br><button onclick="goBack()">⬅ Back</button></div>`;
+      app.innerHTML += `<button onclick="navigate(loadConfirmation)">Proceed to Confirmation</button>`;
+      app.innerHTML += `<button onclick="goBack()">⬅ Back</button></div>`;
     }
 
     function updateSnack(i, qty) {
@@ -202,7 +255,7 @@
             )}" alt="QR Code"/>
           </div>
           <p>Scan QR code at theatre entrance!</p>
-          <button onclick="goBack()">⬅ Back</button>
+          <button onclick="loadWelcome()">🔄 Restart</button>
         </div>
       `;
     }
