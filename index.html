@@ -5,298 +5,363 @@
   <title>Kumkum Theatre</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: #fff8dc; 
-      color: #222;
-      overflow-y: scroll;
-      scrollbar-width: thin;
-      scrollbar-color: darkblue #fff8dc;
+      background-color: #fff8dc; /* faint yellow */
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
     }
-    ::-webkit-scrollbar { width: 10px; }
-    ::-webkit-scrollbar-thumb { background: darkblue; border-radius: 5px; }
-    ::-webkit-scrollbar-track { background: #fff8dc; }
-    .screen { display: none; padding: 40px; text-align: center; min-height: 100vh; }
-    .active { display: block; }
-    h1,h2 { margin-bottom: 20px; }
+    .screen {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+    .active {
+      display: block;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    h1, h2 {
+      color: #333;
+    }
     button {
+      margin: 10px;
       padding: 12px 20px;
-      margin: 8px;
       font-size: 16px;
-      cursor: pointer;
       border: none;
       border-radius: 8px;
-      background: darkblue;
-      color: white;
+      background-color: #ffcc00;
+      cursor: pointer;
       transition: 0.3s;
     }
-    button:hover { background: #003366; }
+    button:hover {
+      background-color: #ffaa00;
+    }
+    input {
+      margin: 8px;
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+    }
+    .seats {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+      justify-items: center;
+      margin: 20px auto;
+      max-width: 600px;
+    }
     .seat {
-      width: 40px; height: 40px; margin: 5px;
-      border-radius: 6px; border: 1px solid #222;
-      cursor: pointer; display: inline-block;
-      vertical-align: middle; line-height: 40px;
+      width: 40px;
+      height: 40px;
+      background: #ddd;
+      border-radius: 6px;
+      cursor: pointer;
     }
-    .selected { background: green; color: white; }
-    .recliner { background: #d2b48c; }
+    .seat.selected {
+      background: #ff6600;
+    }
+    .seat.recliner {
+      background: #b19cd9;
+    }
     .summary {
-      text-align: left; display: inline-block;
-      background: #f9f9f9; padding: 20px;
-      border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      font-size: 18px;
+      margin-top: 20px;
     }
-    .food-item { margin: 10px; }
-    .food-item input { width: 50px; text-align: center; }
   </style>
 </head>
 <body>
+  <!-- Screen 1 -->
+  <div id="screen1" class="screen active">
+    <h1>Welcome to Kumkum Theatre</h1>
+    <button onclick="goToScreen('screen2')">Continue</button>
+  </div>
 
-<!-- Screen 1 -->
-<div id="screen1" class="screen active">
-  <h1>🎬 Welcome to Kumkum Theatre 🎬</h1>
-  <button onclick="nextScreen(2)">Continue</button>
-</div>
+  <!-- Screen 2: Choose Director -->
+  <div id="screen2" class="screen">
+    <h2>Choose Director</h2>
+    <div id="directors"></div>
+  </div>
 
-<!-- Screen 2: Director -->
-<div id="screen2" class="screen">
-  <h2>Choose Director</h2>
-  <div id="director-options"></div>
-  <button onclick="prevScreen(1)">Back</button>
-</div>
+  <!-- Screen 3: Choose Movie -->
+  <div id="screen3" class="screen">
+    <h2>Select a Movie</h2>
+    <div id="movies"></div>
+  </div>
 
-<!-- Screen 3: Movies -->
-<div id="screen3" class="screen">
-  <h2>Select Movie</h2>
-  <div id="movie-options"></div>
-  <button onclick="prevScreen(2)">Back</button>
-</div>
+  <!-- Screen 4: Timings -->
+  <div id="screen4" class="screen">
+    <h2>Select Timing</h2>
+    <div id="timings"></div>
+  </div>
 
-<!-- Screen 4: Show Timing -->
-<div id="screen4" class="screen">
-  <h2>Select Show Timing</h2>
-  <div id="timing-options"></div>
-  <button onclick="prevScreen(3)">Back</button>
-</div>
+  <!-- Screen 5: Screens -->
+  <div id="screen5" class="screen">
+    <h2>Select Screen</h2>
+    <button onclick="selectScreen('LUXE')">LUXE</button>
+    <button onclick="selectScreen('IMAX')">IMAX</button>
+    <button onclick="selectScreen('3D')">3D</button>
+    <button onclick="selectScreen('4DX')">4DX</button>
+    <button onclick="selectScreen('ICE')">ICE</button>
+  </div>
 
-<!-- Screen 5: Seat Selection -->
-<div id="screen5" class="screen">
-  <h2>Select Seats</h2>
-  <div id="seat-map"></div>
-  <p id="seat-info"></p>
-  <button onclick="proceedSeats()">Continue</button>
-  <button onclick="prevScreen(4)">Back</button>
-</div>
+  <!-- Screen 6: Seats -->
+  <div id="screen6" class="screen">
+    <h2>Select Number of People</h2>
+    <input type="number" id="numPeople" min="1" max="10" placeholder="Enter number of tickets">
+    <button onclick="confirmNumPeople()">Proceed</button>
+  </div>
 
-<!-- Screen 6: Details -->
-<div id="screen6" class="screen">
-  <h2>Enter Your Details</h2>
-  <input id="name" placeholder="Name"><br><br>
-  <input id="phone" placeholder="Phone"><br><br>
-  <input id="email" placeholder="Email"><br><br>
-  <input id="card" placeholder="Credit Card Number"><br><br>
-  <button onclick="saveDetails()">Continue</button>
-  <button onclick="prevScreen(5)">Back</button>
-</div>
+  <div id="screen7" class="screen">
+    <h2>Select Seats</h2>
+    <div class="seats" id="seatGrid"></div>
+    <button onclick="finishSeatSelection()">Confirm Seats</button>
+  </div>
 
-<!-- Screen 7: Beverages -->
-<div id="screen7" class="screen">
-  <h2>Do you want beverages?</h2>
-  <button onclick="selectBeverages(true)">Yes</button>
-  <button onclick="selectBeverages(false)">No</button>
-  <button onclick="prevScreen(6)">Back</button>
-</div>
+  <!-- Screen 8: Details -->
+  <div id="screen8" class="screen">
+    <h2>Enter Your Details</h2>
+    <input type="text" id="name" placeholder="Name"><br>
+    <input type="text" id="phone" placeholder="Phone"><br>
+    <input type="email" id="email" placeholder="Email"><br>
+    <input type="text" id="card" placeholder="Credit Card Number"><br>
+    <button onclick="goToScreen('screen9')">Continue</button>
+  </div>
 
-<!-- Screen 8: Beverages Options -->
-<div id="screen8" class="screen">
-  <h2>Select Food & Beverages</h2>
-  <div id="food-options"></div>
-  <button onclick="proceedBeverages()">Continue</button>
-  <button onclick="prevScreen(7)">Back</button>
-</div>
+  <!-- Screen 9: Beverages -->
+  <div id="screen9" class="screen">
+    <h2>Do you want Beverages?</h2>
+    <button onclick="chooseBeverages(true)">Yes</button>
+    <button onclick="chooseBeverages(false)">No</button>
+  </div>
 
-<!-- Screen 9: Summary -->
-<div id="screen9" class="screen">
-  <h2>Booking Summary</h2>
-  <div id="summary" class="summary"></div><br>
-  <button id="confirmBtn">Confirm</button>
-  <button onclick="prevScreen(8)">Back</button>
-</div>
+  <div id="screen10" class="screen">
+    <h2>Select Beverages</h2>
+    <div>
+      <label><input type="checkbox" value="Popcorn"> Popcorn (100)</label><br>
+      <label><input type="checkbox" value="Coca Cola"> Coca Cola (80)</label><br>
+      <label><input type="checkbox" value="Pepsi"> Pepsi (80)</label><br>
+      <label><input type="checkbox" value="French Fries"> French Fries (120)</label><br>
+      <label><input type="checkbox" value="Nachos"> Nachos (150)</label><br>
+      <label><input type="checkbox" value="Magnum Ice Cream"> Magnum Ice Cream (200)</label><br>
+    </div>
+    <button onclick="finalizeBooking()">Continue</button>
+  </div>
 
-<!-- Screen 10: Confirmation -->
-<div id="screen10" class="screen">
-  <h2>✅ Booking Confirmed!</h2>
-  <div id="ticket" class="summary"></div><br>
-  <div id="qrcode"></div><br>
-  <button onclick="nextScreen(11)">Finish</button>
-</div>
+  <!-- Screen 11: Confirmation -->
+  <div id="screen11" class="screen">
+    <h2>Confirmation</h2>
+    <div class="summary" id="summary"></div>
+  </div>
 
-<!-- Screen 11: Thanks -->
-<div id="screen11" class="screen">
-  <h1>🙏 Thanks for using Kumkum Theatre! 🙏</h1>
-</div>
+  <script>
+    const directors = {
+      "KUTE": ["MARUTHUVAR", "HIT", "DOOR", "DOOR2", "SPY"],
+      "GA": ["BISTER", "THOZHAM", "HOSPA", "AIM", "ONE LIFE"],
+      "SORUS": ["HARBOUR","AUTOKARAN","USPA","USPA 2","USPA 3","USPA 4","HOSARANGA","HOSARANGA2","HOSARANGA 3","MIXED EMOTIONS","JOHNSON DUCKNAIL","MAGADI"],
+      "TANISH": ["MUJAHIDEEN","MUJAHIDEEN2","MUJAHIDEEN3"],
+      "POPE": ["THALAIVA","ALLA RETURNS"],
+      "MINE": ["FERNANDEZ","VANAKKAM MADURAI"],
+      "DUTE": ["DEVIL"]
+    };
 
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-<script>
-const directors = {
-  KUTE: ["MARUTHUVAR","HIT","DOOR","DOOR2","SPY"],
-  GA: ["BISTER","THOZHAM","HOSPA","AIM","ONE LIFE"],
-  SORUS: ["HARBOUR","AUTOKARAN","USPA","USPA 2"],
-  TANISH: ["MUJAHIDEEN","MUJAHIDEEN2"],
-  POPE: ["THALAIVA","ALLA RETURNS"],
-  MINE: ["FERNANDEZ","VANAKKAM MADURAI"],
-  DUTE: ["DEVIL"]
-};
+    const movieTimings = {
+      "MARUTHUVAR": ["12:00 PM","4:00 PM","9:00 PM"],
+      "HIT": ["1:00 PM","7:00 PM"],
+      "DOOR": ["11:00 AM","5:00 PM"],
+      "DOOR2": ["3:00 PM","10:00 PM"],
+      "SPY": ["2:00 PM","8:00 PM"],
 
-// Show timings and screens per movie
-const movieShows = {
-  "MARUTHUVAR":[{time:"12:00",screen:"Screen 1 (IMAX)"},{time:"15:00",screen:"Screen 2 (3D)"},{time:"18:30",screen:"Screen 3 (LUXE)"},{time:"21:00",screen:"Screen 4 (4DX)"}],
-  "HIT":[{time:"11:00",screen:"Screen 1 (ICE)"},{time:"14:00",screen:"Screen 2 (LUXE)"},{time:"20:00",screen:"Screen 3 (IMAX)"}],
-  "SPY":[{time:"12:30",screen:"Screen 2 (3D)"},{time:"19:00",screen:"Screen 4 (4DX)"}],
-  "MUJAHIDEEN":[{time:"10:00",screen:"Screen 5 (ICE)"},{time:"22:00",screen:"Screen 1 (IMAX)"}],
-  "THALAIVA":[{time:"13:00",screen:"Screen 2 (LUXE)"},{time:"17:00",screen:"Screen 3 (IMAX)"}]
-};
+      "BISTER": ["10:00 AM","6:00 PM"],
+      "THOZHAM": ["12:30 PM","9:30 PM"],
+      "HOSPA": ["2:30 PM","7:00 PM"],
+      "AIM": ["1:00 PM","5:30 PM"],
+      "ONE LIFE": ["11:30 AM","8:00 PM"],
 
-// Food options
-const foodItems = [
-  {name:"Popcorn",price:50},
-  {name:"Coca Cola",price:40},
-  {name:"Pepsi",price:40},
-  {name:"French Fries",price:70},
-  {name:"Nachos",price:80},
-  {name:"Magnum Ice Cream",price:120}
-];
+      "HARBOUR": ["12:00 PM","6:00 PM"],
+      "AUTOKARAN": ["1:30 PM","9:30 PM"],
+      "USPA": ["3:00 PM"],
+      "USPA 2": ["10:00 AM","4:00 PM"],
+      "USPA 3": ["11:00 AM","8:30 PM"],
+      "USPA 4": ["2:00 PM","10:00 PM"],
+      "HOSARANGA": ["12:00 PM","6:00 PM"],
+      "HOSARANGA2": ["1:00 PM","7:00 PM"],
+      "HOSARANGA 3": ["5:00 PM"],
+      "MIXED EMOTIONS": ["9:00 PM"],
+      "JOHNSON DUCKNAIL": ["4:30 PM","10:30 PM"],
+      "MAGADI": ["11:00 AM","9:00 PM"],
 
-let booking = { director:"", movie:"", show:{}, seats:[], details:{}, food:[], price:0 };
+      "MUJAHIDEEN": ["12:00 PM"],
+      "MUJAHIDEEN2": ["2:30 PM","8:30 PM"],
+      "MUJAHIDEEN3": ["5:00 PM"],
 
-function nextScreen(n){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); document.getElementById("screen"+n).classList.add("active"); }
-function prevScreen(n){ nextScreen(n); }
+      "THALAIVA": ["6:00 PM","10:00 PM"],
+      "ALLA RETURNS": ["11:00 AM","7:00 PM"],
 
-// Director buttons
-const dirDiv=document.getElementById("director-options");
-for(let d in directors){
-  let btn=document.createElement("button");
-  btn.textContent=d;
-  btn.onclick=()=>{ booking.director=d; showMovies(d); };
-  dirDiv.appendChild(btn);
-}
+      "FERNANDEZ": ["3:00 PM"],
+      "VANAKKAM MADURAI": ["1:00 PM","9:00 PM"],
 
-function showMovies(d){
-  let movDiv=document.getElementById("movie-options"); movDiv.innerHTML="";
-  directors[d].forEach(m=>{
-    let b=document.createElement("button"); b.textContent=m; b.onclick=()=>{ booking.movie=m; showTimings(m); };
-    movDiv.appendChild(b);
-  });
-  nextScreen(3);
-}
+      "DEVIL": ["4:00 PM","10:00 PM"]
+    };
 
-function showTimings(m){
-  let tDiv=document.getElementById("timing-options"); tDiv.innerHTML="";
-  let shows=movieShows[m]||[{time:"12:00",screen:"Screen 1 (Standard)"}];
-  shows.forEach(s=>{
-    let b=document.createElement("button");
-    b.textContent=`${s.time} - ${s.screen}`;
-    b.onclick=()=>{ booking.show=s; buildSeats(); nextScreen(5); };
-    tDiv.appendChild(b);
-  });
-  nextScreen(4);
-}
+    let booking = {
+      director: "",
+      movie: "",
+      timing: "",
+      screenType: "",
+      seats: [],
+      numPeople: 0,
+      name: "",
+      price: 0,
+      beverages: []
+    };
 
-// Seats
-function buildSeats(){
-  let seatDiv=document.getElementById("seat-map"); seatDiv.innerHTML="";
-  let rows=["A","B","C","D","E","F"];
-  rows.forEach(r=>{
-    for(let j=1;j<=8;j++){
-      let seat=document.createElement("div");
-      seat.className="seat";
-      seat.textContent=r+j;
-      if(r==="F") seat.classList.add("recliner");
-      seat.onclick=()=>toggleSeat(seat);
-      seatDiv.appendChild(seat);
+    // Screen navigation
+    function goToScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
-    seatDiv.appendChild(document.createElement("br"));
-  });
-}
-function toggleSeat(seat){
-  if(seat.classList.contains("selected")){
-    seat.classList.remove("selected");
-    booking.seats=booking.seats.filter(s=>s!==seat.textContent);
-  } else {
-    seat.classList.add("selected");
-    booking.seats.push(seat.textContent);
-  }
-  document.getElementById("seat-info").textContent="Selected: "+booking.seats.join(", ");
-}
-function proceedSeats(){ nextScreen(6); }
 
-// Details
-function saveDetails(){
-  booking.details={
-    name:document.getElementById("name").value,
-    phone:document.getElementById("phone").value,
-    email:document.getElementById("email").value,
-    card:document.getElementById("card").value
-  };
-  nextScreen(7);
-}
+    // Load directors
+    window.onload = function() {
+      let div = document.getElementById('directors');
+      for (let d in directors) {
+        let btn = document.createElement('button');
+        btn.innerText = d;
+        btn.onclick = () => selectDirector(d);
+        div.appendChild(btn);
+      }
+    };
 
-// Beverages
-function selectBeverages(choice){ choice? buildFoodOptions(): showSummary(); }
-function buildFoodOptions(){
-  let fDiv=document.getElementById("food-options"); fDiv.innerHTML="";
-  foodItems.forEach(f=>{
-    let div=document.createElement("div");
-    div.className="food-item";
-    div.innerHTML=`${f.name} (${f.price} lators) <input type="number" min="0" value="0" id="food-${f.name}">`;
-    fDiv.appendChild(div);
-  });
-  nextScreen(8);
-}
-function proceedBeverages(){
-  booking.food=[];
-  foodItems.forEach(f=>{
-    let qty=parseInt(document.getElementById("food-"+f.name).value)||0;
-    if(qty>0) booking.food.push({name:f.name,qty:qty,price:f.price});
-  });
-  showSummary();
-}
+    function selectDirector(d) {
+      booking.director = d;
+      let div = document.getElementById('movies');
+      div.innerHTML = "";
+      directors[d].forEach(m => {
+        let btn = document.createElement('button');
+        btn.innerText = m;
+        btn.onclick = () => selectMovie(m);
+        div.appendChild(btn);
+      });
+      goToScreen('screen3');
+    }
 
-function showSummary(){
-  let price=200*booking.seats.length;
-  booking.seats.forEach(s=>{
-    if(s.startsWith("E")) price+=50; // last row
-    if(s.startsWith("F")) price+=100; // recliner
-  });
-  // screen surcharge
-  if(booking.show.screen.includes("IMAX")||booking.show.screen.includes("LUXE")||booking.show.screen.includes("3D")||booking.show.screen.includes("4DX")||booking.show.screen.includes("ICE")){
-    price+=370;
-  }
-  booking.food.forEach(f=> price+=f.qty*f.price );
-  booking.price=price;
-  let sum=document.getElementById("summary");
-  sum.innerHTML=`<b>Director:</b> ${booking.director}<br>
-  <b>Movie:</b> ${booking.movie}<br>
-  <b>Show:</b> ${booking.show.time} - ${booking.show.screen}<br>
-  <b>Seats:</b> ${booking.seats.join(", ")}<br>
-  <b>Food:</b> ${booking.food.map(f=>f.name+" x"+f.qty).join(", ")||"None"}<br>
-  <b>Total:</b> ${booking.price} lators`;
-  nextScreen(9);
-}
+    function selectMovie(m) {
+      booking.movie = m;
+      let div = document.getElementById('timings');
+      div.innerHTML = "";
+      (movieTimings[m] || ["12:00 PM"]).forEach(t => {
+        let btn = document.createElement('button');
+        btn.innerText = t;
+        btn.onclick = () => selectTiming(t);
+        div.appendChild(btn);
+      });
+      goToScreen('screen4');
+    }
 
-document.getElementById("confirmBtn").onclick=function(){
-  let t=document.getElementById("ticket");
-  t.innerHTML=`🎟 <b>Kumkum Theatre Ticket</b><br>
-  Movie: ${booking.movie}<br>
-  Director: ${booking.director}<br>
-  Show: ${booking.show.time} - ${booking.show.screen}<br>
-  Seats: ${booking.seats.join(", ")}<br>
-  Name: ${booking.details.name}<br>
-  Total Paid: ${booking.price} lators`;
-  document.getElementById("qrcode").innerHTML="";
-  let qrText=`Kumkum Theatre\nMovie: ${booking.movie}\nDirector: ${booking.director}\nShow: ${booking.show.time} - ${booking.show.screen}\nSeats: ${booking.seats.join(", ")}\nName: ${booking.details.name}\nPrice: ${booking.price} lators`;
-  new QRCode(document.getElementById("qrcode"),{ text:qrText, width:150, height:150 });
-  nextScreen(10);
-};
-</script>
+    function selectTiming(t) {
+      booking.timing = t;
+      goToScreen('screen5');
+    }
+
+    function selectScreen(s) {
+      booking.screenType = s;
+      goToScreen('screen6');
+    }
+
+    function confirmNumPeople() {
+      booking.numPeople = parseInt(document.getElementById('numPeople').value);
+      if (!booking.numPeople || booking.numPeople < 1) {
+        alert("Enter valid number of people");
+        return;
+      }
+      renderSeats();
+      goToScreen('screen7');
+    }
+
+    function renderSeats() {
+      let grid = document.getElementById('seatGrid');
+      grid.innerHTML = "";
+      for (let i = 1; i <= 50; i++) {
+        let seat = document.createElement('div');
+        seat.classList.add('seat');
+        if (i > 40) seat.classList.add('recliner'); // last row recliner
+        seat.innerText = i;
+        seat.onclick = () => toggleSeat(seat, i);
+        grid.appendChild(seat);
+      }
+    }
+
+    function toggleSeat(seat, i) {
+      if (seat.classList.contains('selected')) {
+        seat.classList.remove('selected');
+        booking.seats = booking.seats.filter(s => s !== i);
+      } else {
+        if (booking.seats.length >= booking.numPeople) {
+          alert("You can only select " + booking.numPeople + " seats");
+          return;
+        }
+        seat.classList.add('selected');
+        booking.seats.push(i);
+      }
+    }
+
+    function finishSeatSelection() {
+      if (booking.seats.length !== booking.numPeople) {
+        alert("Select all seats");
+        return;
+      }
+      goToScreen('screen8');
+    }
+
+    function chooseBeverages(yes) {
+      if (yes) goToScreen('screen10');
+      else finalizeBooking();
+    }
+
+    function finalizeBooking() {
+      booking.name = document.getElementById('name').value;
+      let price = 200; // base
+      if (booking.director === "TANISH" && ["SPY","AIM","MAGADI"].includes(booking.movie)) {
+        price = 300;
+      }
+      // Recliner + last row more expensive
+      booking.seats.forEach(s => {
+        if (s > 40) price += 100;
+      });
+      // Screen premium
+      if (["LUXE","IMAX","3D","4DX","ICE"].includes(booking.screenType)) {
+        price += 370;
+      }
+      // Beverages
+      let selected = [];
+      document.querySelectorAll('#screen10 input:checked').forEach(b => {
+        selected.push(b.value);
+        if (b.value === "Popcorn") price += 100;
+        if (b.value === "Coca Cola" || b.value === "Pepsi") price += 80;
+        if (b.value === "French Fries") price += 120;
+        if (b.value === "Nachos") price += 150;
+        if (b.value === "Magnum Ice Cream") price += 200;
+      });
+      booking.beverages = selected;
+      booking.price = price * booking.numPeople;
+
+      document.getElementById('summary').innerHTML = `
+        <p><b>Name:</b> ${booking.name}</p>
+        <p><b>Director:</b> ${booking.director}</p>
+        <p><b>Movie:</b> ${booking.movie}</p>
+        <p><b>Timing:</b> ${booking.timing}</p>
+        <p><b>Screen:</b> ${booking.screenType}</p>
+        <p><b>Seats:</b> ${booking.seats.join(", ")}</p>
+        <p><b>Beverages:</b> ${booking.beverages.join(", ") || "None"}</p>
+        <p><b>Total Price:</b> ${booking.price} lators</p>
+      `;
+      goToScreen('screen11');
+    }
+  </script>
 </body>
 </html>
-
