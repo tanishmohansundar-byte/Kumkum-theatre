@@ -2,258 +2,216 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Kumkum Theatre</title>
+  <title>Kumkum Bank</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #fff9db;
+      background-color: #add8e6; /* Light blue */
       margin: 0;
       padding: 0;
       text-align: center;
     }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
+    .screen {
+      display: none;
+      padding: 40px;
+    }
+    .active {
+      display: block;
+      animation: fadeIn 0.6s ease;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
     }
     h1, h2 {
-      margin-bottom: 20px;
+      color: #003366;
     }
     button {
-      margin: 10px;
-      padding: 10px 20px;
+      background-color: orange;
       border: none;
-      background: #ff9800;
-      color: white;
+      padding: 12px 24px;
+      margin: 12px;
       font-size: 16px;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
     }
     button:hover {
-      background: #e68900;
+      background-color: darkorange;
     }
-    .screen {
-      background: #ccc;
-      padding: 10px;
-      margin-bottom: 20px;
+    input, select, textarea {
+      display: block;
+      margin: 10px auto;
+      padding: 8px;
+      font-size: 14px;
+      width: 250px;
       border-radius: 6px;
-      font-weight: bold;
+      border: 1px solid #555;
     }
-    .seat-layout {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .result-box {
       margin-top: 20px;
-    }
-    .row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      justify-content: center;
-    }
-    .row-label {
-      width: 20px;
-      font-weight: bold;
-    }
-    .row-seats {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 5px;
-    }
-    .seat {
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #333;
-      cursor: pointer;
-      background: #eee;
-      text-align: center;
-    }
-    .seat.selected {
-      background: #4caf50;
-      color: white;
-    }
-    .seat.booked {
-      background: #d32f2f;
-      color: white;
-      cursor: not-allowed;
-    }
-    .snacks {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: center;
-    }
-    .snack-item {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .qr {
-      margin-top: 20px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 10px;
+      display: inline-block;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
   </style>
 </head>
 <body>
-  <div id="app" class="container"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <!-- Welcome -->
+  <div id="welcome" class="screen active">
+    <h1>Welcome to Kumkum Bank</h1>
+    <p>Trusted Partner for Your Financial Needs</p>
+    <button onclick="goToScreen('mainMenu')">Continue</button>
+  </div>
+
+  <!-- Main Menu -->
+  <div id="mainMenu" class="screen">
+    <h2>Main Menu</h2>
+    <button onclick="goToScreen('accounts')">Accounts</button>
+    <button onclick="goToScreen('loans')">Loans</button>
+    <button onclick="goToScreen('movies')">Book Movies 🎬</button>
+    <button onclick="goToScreen('about')">About Us</button>
+    <button onclick="goToScreen('contact')">Contact</button>
+  </div>
+
+  <!-- Accounts -->
+  <div id="accounts" class="screen">
+    <h2>Our Account Options</h2>
+    <button>Savings Account</button>
+    <button>Current Account</button>
+    <button>Fixed Deposit</button>
+    <br><br>
+    <button onclick="goToScreen('mainMenu')">Back</button>
+  </div>
+
+  <!-- Loans -->
+  <div id="loans" class="screen">
+    <h2>Loan Options</h2>
+    <button onclick="showLoanCalculator('Personal Loan')">Personal Loan</button>
+    <button onclick="showLoanCalculator('Home Loan')">Home Loan</button>
+    <button onclick="showLoanCalculator('Car Loan')">Car Loan</button>
+    <button onclick="showLoanCalculator('Education Loan')">Education Loan</button>
+    <br><br>
+    <button onclick="goToScreen('mainMenu')">Back</button>
+    <div id="loanCalculator" style="display:none;">
+      <h3 id="loanType"></h3>
+      <input type="number" id="amount" placeholder="Loan Amount (₹)">
+      <input type="number" id="rate" placeholder="Interest Rate (%)">
+      <input type="number" id="time" placeholder="Time (in years)">
+      <button onclick="calculateEMI()">Calculate EMI</button>
+      <div id="emiResult" class="result-box"></div>
+    </div>
+  </div>
+
+  <!-- Movies -->
+  <div id="movies" class="screen">
+    <h2>Book Movies at Kumkum Theatre 🎬</h2>
+    <p>Select a movie:</p>
+    <button onclick="chooseMovie('JAI BHIM')">Jai Bhim</button>
+    <button onclick="chooseMovie('DETECTIVE')">Detective</button>
+    <button onclick="chooseMovie('NAIDUS PADAM')">Naidus Padam</button>
+    <button onclick="chooseMovie('ULJADDI')">Uljaddi</button>
+    <br><br>
+    <button onclick="goToScreen('mainMenu')">Back</button>
+    <div id="movieDetails" style="display:none; margin-top:20px;"></div>
+  </div>
+
+  <!-- About Us -->
+  <div id="about" class="screen">
+    <h2>About Kumkum Bank</h2>
+    <p>Kumkum Bank has been serving customers since 1990, providing trusted and secure banking solutions. 
+       We offer modern digital banking, reliable loans, and safe investment options.</p>
+    <button onclick="goToScreen('mainMenu')">Back</button>
+  </div>
+
+  <!-- Contact -->
+  <div id="contact" class="screen">
+    <h2>Contact Us</h2>
+    <form id="contactForm" onsubmit="submitContact(event)">
+      <input type="text" id="name" placeholder="Your Name" required>
+      <input type="email" id="email" placeholder="Your Email" required>
+      <textarea id="message" placeholder="Your Message" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+    <button onclick="goToScreen('mainMenu')">Back</button>
+  </div>
+
+  <!-- Confirmation -->
+  <div id="confirmation" class="screen">
+    <h2>Thank You!</h2>
+    <p>Your message has been received.</p>
+    <div id="submittedDetails"></div>
+    <button onclick="goToScreen('mainMenu')">Back to Main Menu</button>
+  </div>
+
   <script>
-    const movies = [
-      "MARUTHUVAR","HIT","DOOR","DOOR2","SPY",
-      "BISTER","THOZHAM","HOSPA","AIM","ONE LIFE",
-      "HARBOUR","AUTOKARAN","USPA","USPA2","USPA3","USPA4","HOSARANGA","HOSARANGA2","HOSARANGA3","MAGADI",
-      "MUJAHIDEEN","MUJAHIDEEN2","MUJAHIDEEN3",
-      "THALAIVA","ALLA RETURNS",
-      "FERNANDEZ","VANAKKAM MADURAI",
-      "DEVIL","JAI BHIM","DETECTIVE","NAIDUS PADAM",
-      "CHOKER"
-    ];
-
-    const shows = {
-      "MARUTHUVAR": [{time:"12:00", screen:"Standard"}, {time:"15:00", screen:"IMAX"}, {time:"18:00", screen:"3D"}, {time:"22:20", screen:"Standard"}],
-      "HIT": [{time:"13:00", screen:"Standard"}, {time:"16:00", screen:"LUXE"}, {time:"19:00", screen:"4DX"}, {time:"22:20", screen:"Standard"}],
-      "SPY": [{time:"11:00", screen:"ICE"}, {time:"14:00", screen:"IMAX"}, {time:"17:00", screen:"Standard"}, {time:"22:20", screen:"3D"}],
-      "JAI BHIM": [{time:"10:00", screen:"Standard"}, {time:"13:00", screen:"IMAX"}, {time:"16:00", screen:"Standard"}, {time:"22:20", screen:"4DX"}],
-      "NAIDUS PADAM": [{time:"12:30", screen:"Standard"}, {time:"15:30", screen:"Standard"}, {time:"18:30", screen:"ICE"}, {time:"22:20", screen:"3D"}],
-      "CHOKER": [{time:"12:15", screen:"Standard"}, {time:"15:15", screen:"IMAX"}, {time:"18:15", screen:"Standard"}, {time:"21:45", screen:"LUXE"}],
-    };
-
-    let state = {
-      movie: null,
-      show: null,
-      seats: [],
-      snacks: {},
-      total: 0
-    };
-
-    let bookedSeats = [];
-
-    function navigate(content) {
-      document.getElementById("app").innerHTML = content;
+    function goToScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
 
-    function start() {
-      navigate(`
-        <h1>Welcome to Kumkum Theatre</h1>
-        <button onclick="chooseMovie()">Continue</button>
-      `);
+    function showLoanCalculator(type) {
+      document.getElementById('loanCalculator').style.display = 'block';
+      document.getElementById('loanType').innerText = type + " EMI Calculator";
+      document.getElementById('emiResult').innerHTML = "";
     }
 
-    function chooseMovie() {
-      navigate("<h2>Choose Movie</h2>" + movies.map(m => 
-        `<button onclick="chooseShow('${m}')">${m}</button>`
-      ).join(""));
-    }
+    function calculateEMI() {
+      let P = parseFloat(document.getElementById('amount').value);
+      let R = parseFloat(document.getElementById('rate').value) / 12 / 100;
+      let N = parseInt(document.getElementById('time').value) * 12;
 
-    function chooseShow(movie) {
-      state.movie = movie;
-      const movieShows = shows[movie] || [
-        {time:"12:00", screen:"Standard"},
-        {time:"15:00", screen:"Standard"},
-        {time:"18:00", screen:"Standard"},
-        {time:"22:20", screen:"Standard"}
-      ];
-      navigate("<h2>Select Show for "+movie+"</h2>" + movieShows.map(s =>
-        `<button onclick="seatSelection('${s.time}','${s.screen}')">${s.time} - ${s.screen}</button>`
-      ).join(""));
-    }
-
-    function seatSelection(time, screen) {
-      state.show = {time, screen};
-      state.seats = [];
-      bookedSeats = generateBookedSeats(); // random booked seats
-      navigate(`
-        <h2>Select Seats (${screen} - ${time})</h2>
-        <div class="screen">SCREEN</div>
-        <div class="seat-layout">
-          ${["A","B","C","D","E","F"].map(r => `
-            <div class="row">
-              <span class="row-label">${r}</span>
-              <div class="row-seats">
-                ${createSeats(r, r=="A"||r=="B"?350:200)}
-              </div>
-            </div>
-          `).join("")}
-        </div>
-        <button onclick="chooseSnacks()">Continue</button>
-      `);
-    }
-
-    function generateBookedSeats() {
-      let allSeats = [];
-      ["A","B","C","D","E","F"].forEach(r=>{
-        for(let i=1;i<=10;i++){ allSeats.push(r+i); }
-      });
-      return allSeats.filter(()=>Math.random()<0.1); // 10% booked
-    }
-
-    function createSeats(row, price) {
-      let html="";
-      for(let i=1;i<=10;i++){
-        let id=row+i;
-        let booked=bookedSeats.includes(id)?"booked":"";
-        html+=`<div class="seat ${booked}" onclick="toggleSeat('${id}',${price},this)">${id}</div>`;
+      if (isNaN(P) || isNaN(R) || isNaN(N)) {
+        alert("Please fill all fields correctly.");
+        return;
       }
-      return html;
+
+      let emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+      document.getElementById('emiResult').innerHTML = 
+        "<b>Monthly EMI: </b> ₹" + emi.toFixed(2);
     }
 
-    function toggleSeat(id, price, el){
-      if(el.classList.contains("booked")) return;
-      if(el.classList.contains("selected")){
-        el.classList.remove("selected");
-        state.seats = state.seats.filter(s=>s.id!==id);
+    function submitContact(event) {
+      event.preventDefault();
+      let name = document.getElementById('name').value;
+      let email = document.getElementById('email').value;
+      let message = document.getElementById('message').value;
+
+      document.getElementById('submittedDetails').innerHTML = `
+        <p><b>Name:</b> ${name}</p>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>Message:</b> ${message}</p>
+      `;
+
+      goToScreen('confirmation');
+      document.getElementById('contactForm').reset();
+    }
+
+    function chooseMovie(movie) {
+      let shows = "";
+      if (movie === "ULJADDI") {
+        shows = `
+          <h3>${movie} - Show Timings</h3>
+          <button>9:00 AM - Screen 1</button>
+          <button>1:00 PM - Screen 2</button>
+          <button>6:15 PM - Screen 3</button>
+          <button>9:45 PM - Screen 4</button>
+        `;
       } else {
-        el.classList.add("selected");
-        state.seats.push({id, price});
+        shows = `
+          <h3>${movie} - Show Timings</h3>
+          <button>10:00 AM - Screen 1</button>
+          <button>1:15 PM - Screen 2</button>
+          <button>6:00 PM - Screen 3</button>
+          <button>10:20 PM - Screen 4</button>
+        `;
       }
+      document.getElementById('movieDetails').style.display = 'block';
+      document.getElementById('movieDetails').innerHTML = shows;
     }
-
-    function chooseSnacks(){
-      navigate(`
-        <h2>Select Snacks</h2>
-        <div class="snacks">
-          ${["Popcorn","Coca Cola","Pepsi","French Fries","Nachos","Magnum Ice Cream"].map(item=>`
-            <div class="snack-item">
-              <label>${item}</label>
-              <input type="number" min="0" value="0" id="snack-${item}">
-            </div>
-          `).join("")}
-        </div>
-        <button onclick="confirmBooking()">Confirm</button>
-      `);
-    }
-
-    function confirmBooking(){
-      let snackTotal=0;
-      state.snacks={};
-      ["Popcorn","Coca Cola","Pepsi","French Fries","Nachos","Magnum Ice Cream"].forEach(item=>{
-        let qty=parseInt(document.getElementById("snack-"+item).value)||0;
-        if(qty>0){
-          state.snacks[item]=qty;
-          snackTotal+=qty*100;
-        }
-      });
-      let seatTotal=state.seats.reduce((sum,s)=>sum+s.price,0);
-      state.total=seatTotal+snackTotal;
-
-      let snacksList = Object.entries(state.snacks).map(([k,v])=>`${k} x${v}`).join(", ");
-      if(!snacksList) snacksList = "None";
-
-      let qrData=`Movie: ${state.movie}, Show: ${state.show.time} ${state.show.screen}, Seats: ${state.seats.map(s=>s.id).join(",")}, Snacks: ${snacksList}, Total: ${state.total} lators`;
-      navigate(`
-        <h2>Confirmation</h2>
-        <p>Movie: ${state.movie}</p>
-        <p>Show: ${state.show.time} - ${state.show.screen}</p>
-        <p>Seats: ${state.seats.map(s=>s.id).join(", ")}</p>
-        <p>Snacks: ${snacksList}</p>
-        <p>Total: ${state.total} lators</p>
-        <canvas id="qr"></canvas>
-        <br><button onclick="start()">Restart</button>
-      `);
-      new QRious({element:document.getElementById("qr"),value:qrData,size:200});
-    }
-
-    start();
   </script>
+
 </body>
 </html>
