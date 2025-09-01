@@ -2,18 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Kumkum Bank</title>
+  <title>Kumkum Theatre Booking</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #add8e6; /* Light blue */
+      background-color: #111;
+      color: white;
+      text-align: center;
       margin: 0;
       padding: 0;
-      text-align: center;
     }
     .screen {
       display: none;
-      padding: 40px;
+      padding: 30px;
     }
     .active {
       display: block;
@@ -24,28 +25,27 @@
       to {opacity: 1;}
     }
     h1, h2 {
-      color: #003366;
+      color: gold;
     }
     button {
-      background-color: orange;
+      background-color: crimson;
       border: none;
       padding: 12px 24px;
       margin: 12px;
       font-size: 16px;
       border-radius: 8px;
       cursor: pointer;
+      color: white;
     }
     button:hover {
-      background-color: darkorange;
+      background-color: darkred;
     }
-    input, select {
-      margin: 10px auto;
+    input {
+      margin: 10px;
       padding: 8px;
       font-size: 14px;
-      width: 250px;
       border-radius: 6px;
-      border: 1px solid #555;
-      display: block;
+      border: none;
     }
     .seat-grid {
       display: grid;
@@ -57,7 +57,7 @@
     .seat {
       width: 40px;
       height: 40px;
-      background: #ccc;
+      background: #666;
       border-radius: 5px;
       cursor: pointer;
       line-height: 40px;
@@ -72,10 +72,15 @@
     .result-box {
       margin-top: 20px;
       padding: 15px;
-      background: #fff;
+      background: #222;
       border-radius: 10px;
       display: inline-block;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    canvas {
+      margin-top: 15px;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
     }
   </style>
 </head>
@@ -83,41 +88,27 @@
 
   <!-- Welcome -->
   <div id="welcome" class="screen active">
-    <h1>Welcome to Kumkum Bank</h1>
-    <p>Trusted Partner for Your Financial Needs</p>
-    <button onclick="goToScreen('mainMenu')">Continue</button>
-  </div>
-
-  <!-- Main Menu -->
-  <div id="mainMenu" class="screen">
-    <h2>Main Menu</h2>
-    <button onclick="goToScreen('accounts')">Accounts</button>
-    <button onclick="goToScreen('loans')">Loans</button>
-    <button onclick="goToScreen('movies')">Book Movies 🎬</button>
-    <button onclick="goToScreen('about')">About Us</button>
-    <button onclick="goToScreen('contact')">Contact</button>
+    <h1>🎬 Welcome to Kumkum Theatre 🎬</h1>
+    <button onclick="goToScreen('movies')">Book Tickets</button>
   </div>
 
   <!-- Movies -->
   <div id="movies" class="screen">
-    <h2>Book Movies at Kumkum Theatre 🎬</h2>
-    <p>Select a movie:</p>
+    <h2>Select a Movie</h2>
     <button onclick="chooseMovie('JAI BHIM')">Jai Bhim</button>
     <button onclick="chooseMovie('DETECTIVE')">Detective</button>
     <button onclick="chooseMovie('NAIDUS PADAM')">Naidus Padam</button>
     <button onclick="chooseMovie('ULJADDI')">Uljaddi</button>
-    <br><br>
-    <button onclick="goToScreen('mainMenu')">Back</button>
-    <div id="movieDetails" style="display:none; margin-top:20px;"></div>
+    <button onclick="chooseMovie('CHOKER')">Choker</button>
   </div>
 
   <!-- Customers + Date -->
   <div id="customerScreen" class="screen">
     <h2 id="selectedMovieTitle"></h2>
-    <label>Select Date:</label>
-    <input type="date" id="movieDate" required>
-    <label>Number of Customers:</label>
-    <input type="number" id="numCustomers" min="1" max="10" required>
+    <label>Select Date:</label><br>
+    <input type="date" id="movieDate"><br>
+    <label>Number of Customers:</label><br>
+    <input type="number" id="numCustomers" min="1" max="10"><br>
     <button onclick="goToSeats()">Proceed to Seat Selection</button>
   </div>
 
@@ -132,10 +123,12 @@
   <div id="confirmation" class="screen">
     <h2>Booking Confirmed ✅</h2>
     <div id="ticketDetails" class="result-box"></div>
-    <button onclick="goToScreen('mainMenu')">Back to Main Menu</button>
+    <canvas id="qrcode"></canvas>
+    <br>
     <button onclick="restartBooking()">Book Again</button>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
   <script>
     let chosenMovie = "";
     let chosenShow = "";
@@ -152,30 +145,17 @@
       chosenMovie = movie;
       let shows = "";
       if (movie === "ULJADDI") {
-        shows = `
-          <h3>${movie} - Show Timings</h3>
-          <button onclick="selectShow('9:00 AM','Screen 1')">9:00 AM - Screen 1</button>
-          <button onclick="selectShow('1:00 PM','Screen 2')">1:00 PM - Screen 2</button>
-          <button onclick="selectShow('6:15 PM','Screen 3')">6:15 PM - Screen 3</button>
-          <button onclick="selectShow('9:45 PM','Screen 4')">9:45 PM - Screen 4</button>
-        `;
+        chosenShow = "9:45 PM";
+        chosenScreen = "Screen 4";
+      } else if (movie === "CHOKER") {
+        chosenShow = "10:20 PM";
+        chosenScreen = "Screen 2";
       } else {
-        shows = `
-          <h3>${movie} - Show Timings</h3>
-          <button onclick="selectShow('10:00 AM','Screen 1')">10:00 AM - Screen 1</button>
-          <button onclick="selectShow('1:15 PM','Screen 2')">1:15 PM - Screen 2</button>
-          <button onclick="selectShow('6:00 PM','Screen 3')">6:00 PM - Screen 3</button>
-          <button onclick="selectShow('10:20 PM','Screen 4')">10:20 PM - Screen 4</button>
-        `;
+        chosenShow = "6:00 PM";
+        chosenScreen = "Screen 1";
       }
-      document.getElementById('movieDetails').style.display = 'block';
-      document.getElementById('movieDetails').innerHTML = shows;
-    }
-
-    function selectShow(time, screen) {
-      chosenShow = time;
-      chosenScreen = screen;
-      document.getElementById("selectedMovieTitle").innerText = chosenMovie + " - " + chosenShow + " (" + chosenScreen + ")";
+      document.getElementById("selectedMovieTitle").innerText = 
+        movie + " - " + chosenShow + " (" + chosenScreen + ")";
       goToScreen('customerScreen');
     }
 
@@ -203,13 +183,13 @@
           seat.classList.add("seat");
           seat.innerText = r + "" + c;
           if (r <= 2) seat.classList.add("premium");
-          seat.onclick = () => toggleSeat(seat, r, c);
+          seat.onclick = () => toggleSeat(seat);
           seatGrid.appendChild(seat);
         }
       }
     }
 
-    function toggleSeat(seat, r, c) {
+    function toggleSeat(seat) {
       if (seat.classList.contains("selected")) {
         seat.classList.remove("selected");
         selectedSeats = selectedSeats.filter(s => s !== seat.innerText);
@@ -235,14 +215,23 @@
         total += (row <= 2) ? 350 : 200;
       });
 
-      document.getElementById("ticketDetails").innerHTML = `
-        <h3>${chosenMovie}</h3>
-        <p><b>Date:</b> ${document.getElementById('movieDate').value}</p>
-        <p><b>Show:</b> ${chosenShow} (${chosenScreen})</p>
-        <p><b>Seats:</b> ${selectedSeats.join(", ")}</p>
-        <p><b>Tickets:</b> ${numCustomers}</p>
-        <p><b>Total Price:</b> ₹${total}</p>
+      let bookingInfo = `
+        🎬 ${chosenMovie}
+        📅 ${document.getElementById('movieDate').value}
+        ⏰ ${chosenShow} (${chosenScreen})
+        💺 Seats: ${selectedSeats.join(", ")}
+        🎟 Tickets: ${numCustomers}
+        💰 Total: ₹${total}
       `;
+
+      document.getElementById("ticketDetails").innerHTML = bookingInfo.replace(/\n/g,"<br>");
+
+      let qr = new QRious({
+        element: document.getElementById('qrcode'),
+        value: bookingInfo,
+        size: 200
+      });
+
       goToScreen('confirmation');
     }
 
