@@ -38,14 +38,36 @@
     button:hover {
       background-color: darkorange;
     }
-    input, select, textarea {
-      display: block;
+    input, select {
       margin: 10px auto;
       padding: 8px;
       font-size: 14px;
       width: 250px;
       border-radius: 6px;
       border: 1px solid #555;
+      display: block;
+    }
+    .seat-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 40px);
+      grid-gap: 8px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .seat {
+      width: 40px;
+      height: 40px;
+      background: #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      line-height: 40px;
+    }
+    .seat.selected {
+      background: green;
+      color: white;
+    }
+    .seat.premium {
+      background: #9999ff;
     }
     .result-box {
       margin-top: 20px;
@@ -76,35 +98,6 @@
     <button onclick="goToScreen('contact')">Contact</button>
   </div>
 
-  <!-- Accounts -->
-  <div id="accounts" class="screen">
-    <h2>Our Account Options</h2>
-    <button>Savings Account</button>
-    <button>Current Account</button>
-    <button>Fixed Deposit</button>
-    <br><br>
-    <button onclick="goToScreen('mainMenu')">Back</button>
-  </div>
-
-  <!-- Loans -->
-  <div id="loans" class="screen">
-    <h2>Loan Options</h2>
-    <button onclick="showLoanCalculator('Personal Loan')">Personal Loan</button>
-    <button onclick="showLoanCalculator('Home Loan')">Home Loan</button>
-    <button onclick="showLoanCalculator('Car Loan')">Car Loan</button>
-    <button onclick="showLoanCalculator('Education Loan')">Education Loan</button>
-    <br><br>
-    <button onclick="goToScreen('mainMenu')">Back</button>
-    <div id="loanCalculator" style="display:none;">
-      <h3 id="loanType"></h3>
-      <input type="number" id="amount" placeholder="Loan Amount (₹)">
-      <input type="number" id="rate" placeholder="Interest Rate (%)">
-      <input type="number" id="time" placeholder="Time (in years)">
-      <button onclick="calculateEMI()">Calculate EMI</button>
-      <div id="emiResult" class="result-box"></div>
-    </div>
-  </div>
-
   <!-- Movies -->
   <div id="movies" class="screen">
     <h2>Book Movies at Kumkum Theatre 🎬</h2>
@@ -118,98 +111,148 @@
     <div id="movieDetails" style="display:none; margin-top:20px;"></div>
   </div>
 
-  <!-- About Us -->
-  <div id="about" class="screen">
-    <h2>About Kumkum Bank</h2>
-    <p>Kumkum Bank has been serving customers since 1990, providing trusted and secure banking solutions. 
-       We offer modern digital banking, reliable loans, and safe investment options.</p>
-    <button onclick="goToScreen('mainMenu')">Back</button>
+  <!-- Customers + Date -->
+  <div id="customerScreen" class="screen">
+    <h2 id="selectedMovieTitle"></h2>
+    <label>Select Date:</label>
+    <input type="date" id="movieDate" required>
+    <label>Number of Customers:</label>
+    <input type="number" id="numCustomers" min="1" max="10" required>
+    <button onclick="goToSeats()">Proceed to Seat Selection</button>
   </div>
 
-  <!-- Contact -->
-  <div id="contact" class="screen">
-    <h2>Contact Us</h2>
-    <form id="contactForm" onsubmit="submitContact(event)">
-      <input type="text" id="name" placeholder="Your Name" required>
-      <input type="email" id="email" placeholder="Your Email" required>
-      <textarea id="message" placeholder="Your Message" required></textarea>
-      <button type="submit">Submit</button>
-    </form>
-    <button onclick="goToScreen('mainMenu')">Back</button>
+  <!-- Seat Selection -->
+  <div id="seatScreen" class="screen">
+    <h2>Select Your Seats</h2>
+    <div class="seat-grid" id="seatGrid"></div>
+    <button onclick="confirmBooking()">Confirm Booking</button>
   </div>
 
   <!-- Confirmation -->
   <div id="confirmation" class="screen">
-    <h2>Thank You!</h2>
-    <p>Your message has been received.</p>
-    <div id="submittedDetails"></div>
+    <h2>Booking Confirmed ✅</h2>
+    <div id="ticketDetails" class="result-box"></div>
     <button onclick="goToScreen('mainMenu')">Back to Main Menu</button>
+    <button onclick="restartBooking()">Book Again</button>
   </div>
 
   <script>
+    let chosenMovie = "";
+    let chosenShow = "";
+    let chosenScreen = "";
+    let numCustomers = 0;
+    let selectedSeats = [];
+
     function goToScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
     }
 
-    function showLoanCalculator(type) {
-      document.getElementById('loanCalculator').style.display = 'block';
-      document.getElementById('loanType').innerText = type + " EMI Calculator";
-      document.getElementById('emiResult').innerHTML = "";
-    }
-
-    function calculateEMI() {
-      let P = parseFloat(document.getElementById('amount').value);
-      let R = parseFloat(document.getElementById('rate').value) / 12 / 100;
-      let N = parseInt(document.getElementById('time').value) * 12;
-
-      if (isNaN(P) || isNaN(R) || isNaN(N)) {
-        alert("Please fill all fields correctly.");
-        return;
-      }
-
-      let emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
-      document.getElementById('emiResult').innerHTML = 
-        "<b>Monthly EMI: </b> ₹" + emi.toFixed(2);
-    }
-
-    function submitContact(event) {
-      event.preventDefault();
-      let name = document.getElementById('name').value;
-      let email = document.getElementById('email').value;
-      let message = document.getElementById('message').value;
-
-      document.getElementById('submittedDetails').innerHTML = `
-        <p><b>Name:</b> ${name}</p>
-        <p><b>Email:</b> ${email}</p>
-        <p><b>Message:</b> ${message}</p>
-      `;
-
-      goToScreen('confirmation');
-      document.getElementById('contactForm').reset();
-    }
-
     function chooseMovie(movie) {
+      chosenMovie = movie;
       let shows = "";
       if (movie === "ULJADDI") {
         shows = `
           <h3>${movie} - Show Timings</h3>
-          <button>9:00 AM - Screen 1</button>
-          <button>1:00 PM - Screen 2</button>
-          <button>6:15 PM - Screen 3</button>
-          <button>9:45 PM - Screen 4</button>
+          <button onclick="selectShow('9:00 AM','Screen 1')">9:00 AM - Screen 1</button>
+          <button onclick="selectShow('1:00 PM','Screen 2')">1:00 PM - Screen 2</button>
+          <button onclick="selectShow('6:15 PM','Screen 3')">6:15 PM - Screen 3</button>
+          <button onclick="selectShow('9:45 PM','Screen 4')">9:45 PM - Screen 4</button>
         `;
       } else {
         shows = `
           <h3>${movie} - Show Timings</h3>
-          <button>10:00 AM - Screen 1</button>
-          <button>1:15 PM - Screen 2</button>
-          <button>6:00 PM - Screen 3</button>
-          <button>10:20 PM - Screen 4</button>
+          <button onclick="selectShow('10:00 AM','Screen 1')">10:00 AM - Screen 1</button>
+          <button onclick="selectShow('1:15 PM','Screen 2')">1:15 PM - Screen 2</button>
+          <button onclick="selectShow('6:00 PM','Screen 3')">6:00 PM - Screen 3</button>
+          <button onclick="selectShow('10:20 PM','Screen 4')">10:20 PM - Screen 4</button>
         `;
       }
       document.getElementById('movieDetails').style.display = 'block';
       document.getElementById('movieDetails').innerHTML = shows;
+    }
+
+    function selectShow(time, screen) {
+      chosenShow = time;
+      chosenScreen = screen;
+      document.getElementById("selectedMovieTitle").innerText = chosenMovie + " - " + chosenShow + " (" + chosenScreen + ")";
+      goToScreen('customerScreen');
+    }
+
+    function goToSeats() {
+      let date = document.getElementById('movieDate').value;
+      numCustomers = parseInt(document.getElementById('numCustomers').value);
+
+      if (!date || !numCustomers) {
+        alert("Please select a date and number of customers.");
+        return;
+      }
+
+      buildSeats();
+      goToScreen('seatScreen');
+    }
+
+    function buildSeats() {
+      const seatGrid = document.getElementById('seatGrid');
+      seatGrid.innerHTML = "";
+      selectedSeats = [];
+
+      for (let r = 1; r <= 6; r++) {
+        for (let c = 1; c <= 8; c++) {
+          let seat = document.createElement("div");
+          seat.classList.add("seat");
+          seat.innerText = r + "" + c;
+          if (r <= 2) seat.classList.add("premium");
+          seat.onclick = () => toggleSeat(seat, r, c);
+          seatGrid.appendChild(seat);
+        }
+      }
+    }
+
+    function toggleSeat(seat, r, c) {
+      if (seat.classList.contains("selected")) {
+        seat.classList.remove("selected");
+        selectedSeats = selectedSeats.filter(s => s !== seat.innerText);
+      } else {
+        if (selectedSeats.length >= numCustomers) {
+          alert("You can only select " + numCustomers + " seats.");
+          return;
+        }
+        seat.classList.add("selected");
+        selectedSeats.push(seat.innerText);
+      }
+    }
+
+    function confirmBooking() {
+      if (selectedSeats.length !== numCustomers) {
+        alert("Please select " + numCustomers + " seats.");
+        return;
+      }
+
+      let total = 0;
+      selectedSeats.forEach(seat => {
+        let row = parseInt(seat[0]);
+        total += (row <= 2) ? 350 : 200;
+      });
+
+      document.getElementById("ticketDetails").innerHTML = `
+        <h3>${chosenMovie}</h3>
+        <p><b>Date:</b> ${document.getElementById('movieDate').value}</p>
+        <p><b>Show:</b> ${chosenShow} (${chosenScreen})</p>
+        <p><b>Seats:</b> ${selectedSeats.join(", ")}</p>
+        <p><b>Tickets:</b> ${numCustomers}</p>
+        <p><b>Total Price:</b> ₹${total}</p>
+      `;
+      goToScreen('confirmation');
+    }
+
+    function restartBooking() {
+      chosenMovie = "";
+      chosenShow = "";
+      chosenScreen = "";
+      numCustomers = 0;
+      selectedSeats = [];
+      goToScreen('movies');
     }
   </script>
 
