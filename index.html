@@ -4,25 +4,34 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Kumkum Cinemas | Premium Movie Experience</title>
+<title>Kumkum Cinemas | Premium Booking</title>
+
 
 <link rel="stylesheet" href="style.css">
 
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
+
 </head>
+
 
 
 <body>
 
 
+
 <!-- ================= NAVBAR ================= -->
 
+
 <header class="navbar">
+
 
 <div class="brand">
 
@@ -31,11 +40,14 @@
 </div>
 
 
+
 <nav>
 
 <a href="#home">Home</a>
 
 <a href="#movies">Movies</a>
+
+<a href="#booking">Booking</a>
 
 <a href="#screens">Screens</a>
 
@@ -43,12 +55,14 @@
 
 <a href="#offers">Offers</a>
 
-<a href="#contact">Contact</a>
 
 </nav>
 
 
 </header>
+
+
+
 
 
 
@@ -64,24 +78,26 @@
 
 <h1>
 
-Experience Movies
+Welcome To
 
-<span>Like Never Before</span>
+<span>Kumkum Cinemas</span>
 
 </h1>
 
 
+
 <p>
 
-Luxury Seats • IMAX • ICE • 4DX • Dolby Atmos
+Premium Movies • Luxury Seats • IMAX • LUXE • ICE • 4DX
 
 </p>
 
 
 
-<button class="premium-btn" onclick="chooseMovie()">
 
-BOOK TICKETS
+<button class="premium-btn" onclick="document.getElementById('movies').scrollIntoView()">
+
+BOOK MOVIE
 
 </button>
 
@@ -93,90 +109,6 @@ BOOK TICKETS
 </section>
 
 
-
-
-
-
-<!-- ================= ABOUT ================= -->
-
-
-<section class="about">
-
-
-<h2>
-
-Welcome To Kumkum Cinemas
-
-</h2>
-
-
-
-<p>
-
-A premium entertainment destination where cinema meets luxury.
-Enjoy world-class screens, comfortable seating, amazing food,
-and unforgettable movie experiences.
-
-</p>
-
-
-
-<div class="features">
-
-
-<div>
-
-<h3>🎥 8K Projection</h3>
-
-<p>
-Crystal clear visuals
-</p>
-
-</div>
-
-
-
-<div>
-
-<h3>🔊 Dolby Atmos</h3>
-
-<p>
-Immersive sound experience
-</p>
-
-</div>
-
-
-
-
-<div>
-
-<h3>💺 Luxury Recliners</h3>
-
-<p>
-Maximum comfort
-</p>
-
-</div>
-
-
-
-<div>
-
-<h3>🍿 Premium Food</h3>
-
-<p>
-Cinema snacks & combos
-</p>
-
-</div>
-
-
-
-</div>
-
-
-</section>
 
 
 
@@ -200,11 +132,10 @@ Now Showing
 
 <div id="movie-list" class="movie-container">
 
-
-<!-- Javascript loads movies here -->
-
+<!-- Movies load from JavaScript -->
 
 </div>
+
 
 
 </section>
@@ -215,22 +146,39 @@ Now Showing
 
 
 
-<!-- ================= BOOKING AREA ================= -->
+
+
+<!-- ================= BOOKING ================= -->
 
 
 <section id="booking">
 
 
+<h2>
+
+Ticket Booking
+
+</h2>
+
+
+
 <div id="app">
 
 
-<!-- Booking system appears here -->
+<h3>
+
+Select a movie above to start booking
+
+</h3>
 
 
 </div>
 
 
+
 </section>
+
+
 
 
 
@@ -246,52 +194,42 @@ Now Showing
 
 <h2>
 
-Our Premium Screens
+Premium Screens
 
 </h2>
 
 
 
-<div class="screen-grid">
-
-
-<div class="movie-card">
-
-
-<h3>IMAX</h3>
-
-<p>
-
-Largest screen with powerful visuals
-
-</p>
-
-
-</div>
+<div class="features">
 
 
 
-<div class="movie-card">
+<div>
 
+<h3>
 
-<h3>4DX</h3>
+🎥 IMAX
+
+</h3>
 
 <p>
 
-Motion seats & special effects
+Massive screen with crystal visuals
 
 </p>
-
 
 </div>
 
 
 
 
-<div class="movie-card">
+<div>
 
+<h3>
 
-<h3>LUXE</h3>
+✨ LUXE
+
+</h3>
 
 <p>
 
@@ -299,25 +237,46 @@ Luxury recliner experience
 
 </p>
 
-
 </div>
 
 
 
 
-<div class="movie-card">
+<div>
 
+<h3>
 
-<h3>ICE</h3>
+❄ ICE
+
+</h3>
 
 <p>
 
-Premium immersive cinema
+Immersive cinema technology
 
 </p>
 
+</div>
+
+
+
+
+<div>
+
+<h3>
+
+⚡ 4DX
+
+</h3>
+
+<p>
+
+Motion seats and effects
+
+</p>
 
 </div>
+
 
 
 </div>
@@ -325,6 +284,7 @@ Premium immersive cinema
 
 
 </section>
+
 
 
 
@@ -341,9 +301,10 @@ Premium immersive cinema
 
 <h2>
 
-Cinema Food Experience
+Food & Beverages
 
 </h2>
+
 
 
 
@@ -354,15 +315,22 @@ Cinema Food Experience
 
 🍿
 
-<h3>Classic Popcorn</h3>
+<h3>
+
+Popcorn
+
+</h3>
+
 
 <p>
 
-Fresh hot popcorn
+Fresh cinema popcorn
 
 </p>
 
+
 </div>
+
 
 
 
@@ -371,13 +339,19 @@ Fresh hot popcorn
 
 🥤
 
-<h3>Cold Drinks</h3>
+<h3>
+
+Cold Drinks
+
+</h3>
+
 
 <p>
 
-Coke, Pepsi & more
+Coke & Pepsi
 
 </p>
+
 
 </div>
 
@@ -389,7 +363,12 @@ Coke, Pepsi & more
 
 🍔
 
-<h3>Premium Combos</h3>
+<h3>
+
+Premium Combos
+
+</h3>
+
 
 <p>
 
@@ -397,8 +376,8 @@ Burger + Fries + Drink
 
 </p>
 
-</div>
 
+</div>
 
 
 
@@ -407,7 +386,12 @@ Burger + Fries + Drink
 
 🍦
 
-<h3>Ice Cream</h3>
+<h3>
+
+Ice Cream
+
+</h3>
+
 
 <p>
 
@@ -415,11 +399,13 @@ Magnum Specials
 
 </p>
 
-</div>
-
-
 
 </div>
+
+
+
+</div>
+
 
 
 </section>
@@ -446,11 +432,12 @@ Special Offers
 
 
 
-<div class="offers">
+
+<div class="features">
 
 
-<div class="movie-card">
 
+<div>
 
 <h3>
 
@@ -458,22 +445,18 @@ Weekend Offer
 
 </h3>
 
-
 <p>
 
-20% OFF on selected shows
+20% discount on selected shows
 
 </p>
-
 
 </div>
 
 
 
 
-
-<div class="movie-card">
-
+<div>
 
 <h3>
 
@@ -481,22 +464,18 @@ Student Offer
 
 </h3>
 
-
 <p>
 
-Special pricing every Monday
+Special weekday pricing
 
 </p>
-
 
 </div>
 
 
 
 
-
-<div class="movie-card">
-
+<div>
 
 <h3>
 
@@ -504,19 +483,18 @@ Family Pack
 
 </h3>
 
-
 <p>
 
-Tickets + Snacks Combo
+Tickets + Snacks combo
 
 </p>
 
-
 </div>
 
 
 
 </div>
+
 
 
 </section>
@@ -532,7 +510,7 @@ Tickets + Snacks Combo
 <!-- ================= MEMBERSHIP ================= -->
 
 
-<section class="membership">
+<section>
 
 
 <h2>
@@ -543,20 +521,23 @@ Kumkum Gold Membership
 
 
 
-<p>
+<p style="text-align:center">
 
-Get exclusive discounts,
-priority booking and premium benefits.
+Priority booking, discounts and premium benefits
 
 </p>
 
 
+
+<center>
 
 <button class="premium-btn">
 
 JOIN NOW
 
 </button>
+
+</center>
 
 
 
@@ -569,35 +550,30 @@ JOIN NOW
 
 
 
+
 <!-- ================= CONTACT ================= -->
 
 
-<section id="contact">
+<section>
 
 
 <h2>
 
-Contact Us
+Contact
 
 </h2>
 
 
 
-<p>
+<p style="text-align:center">
 
 📍 Kumkum Cinemas
 
-</p>
+<br><br>
 
+📞 1800-KUMKUM
 
-<p>
-
-📞 Customer Care: 1800-KUMKUM
-
-</p>
-
-
-<p>
+<br><br>
 
 ✉ support@kumkumcinemas.com
 
@@ -628,21 +604,18 @@ Contact Us
 </h3>
 
 
-
 <p>
 
-The premium movie destination
+The Ultimate Movie Experience
 
 </p>
 
 
-
 <p>
 
-© 2026 Kumkum Cinemas. All Rights Reserved.
+© 2026 Kumkum Cinemas
 
 </p>
-
 
 
 </footer>
@@ -652,7 +625,10 @@ The premium movie destination
 
 
 
+
+
 <script src="script.js"></script>
+
 
 
 </body>
