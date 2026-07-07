@@ -374,6 +374,98 @@ window.scrollTo(0,0);
 }
 
 </script>
+const movieData = {
+  "Nagarjuna": {
+    shows: [
+      { time: "9:00 AM", screen: "Standard" },
+      { time: "12:30 PM", screen: "IMAX" },
+      { time: "4:00 PM", screen: "LUXE" },
+      { time: "7:30 PM", screen: "ICE" },
+      { time: "10:45 PM", screen: "4DX" }
+    ]
+  },
 
+  "306": {
+    shows: [
+      { time: "10:15 AM", screen: "LUXE" },
+      { time: "1:45 PM", screen: "Standard" },
+      { time: "5:15 PM", screen: "IMAX" },
+      { time: "8:45 PM", screen: "ICE" }
+    ]
+  },
+
+  "Gangster": {
+    shows: [
+      { time: "11:00 AM", screen: "4DX" },
+      { time: "2:30 PM", screen: "IMAX" },
+      { time: "6:00 PM", screen: "LUXE" },
+      { time: "9:30 PM", screen: "Standard" }
+    ]
+  }
+};
+
+function openMovies() {
+  document.querySelector(".hero").style.display = "none";
+  document.getElementById("movies").style.display = "block";
+}
+
+function openBooking(movie) {
+
+  const data = movieData[movie];
+
+  let html = `
+  <div style="padding:40px;text-align:center;background:#111;min-height:100vh;color:white;">
+      <h1 style="color:gold;">${movie}</h1>
+      <h3>Select Show</h3>
+      <br>
+  `;
+
+  data.shows.forEach(show => {
+    html += `
+      <button
+      onclick="chooseShow('${movie}','${show.time}','${show.screen}')"
+      style="
+      width:250px;
+      padding:15px;
+      margin:10px;
+      font-size:18px;
+      border:none;
+      border-radius:40px;
+      background:gold;
+      cursor:pointer;">
+      ${show.time}<br>
+      <small>${show.screen}</small>
+      </button>
+    `;
+  });
+
+  html += `
+  <br><br>
+  <button onclick="location.reload()"
+  style="
+  padding:12px 35px;
+  border:none;
+  border-radius:30px;
+  background:#444;
+  color:white;
+  cursor:pointer;">
+  ← Back
+  </button>
+  </div>
+  `;
+
+  document.body.innerHTML = html;
+}
+
+function chooseShow(movie,time,screen){
+
+alert(
+"Movie : "+movie+
+"\nShow : "+time+
+"\nScreen : "+screen+
+"\n\nSeat selection will be the next page."
+);
+
+}
 </body>
 </html>
