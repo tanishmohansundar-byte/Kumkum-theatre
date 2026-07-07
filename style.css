@@ -1,186 +1,120 @@
-/* ================================
-   KUMKUM THEATRE PREMIUM DESIGN
-================================ */
+// =====================================
+// KUMKUM THEATRE PREMIUM BOOKING SYSTEM
+// =====================================
 
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
-}
+const movies = [
 
+{name:"MARUTHUVAR",rating:"6.8"},
+{name:"HIT",rating:"3.8"},
+{name:"DOOR",rating:"7.8"},
+{name:"DOOR 2",rating:"8.0"},
+{name:"SPY",rating:"9.6"},
+{name:"BISTER",rating:"9.2"},
+{name:"THOZHAM",rating:"8.4"},
+{name:"HOSPA",rating:"8.9"},
+{name:"AIM",rating:"9.6"},
+{name:"ONE LIFE",rating:"8.6"},
+{name:"HARBOUR",rating:"9.8"},
+{name:"AUTOKARAN",rating:"9.5"},
+{name:"USPA",rating:"5.3"},
+{name:"USPA 2",rating:"5.2"},
+{name:"USPA 3",rating:"6.1"},
+{name:"HOSARANGA",rating:"5.8"},
+{name:"HOSARANGA 2",rating:"6.0"},
+{name:"MUJAHIDEEN",rating:"9.1"},
+{name:"THALAIVA",rating:"7.6"},
+{name:"ALLA RETURNS",rating:"7.8"},
+{name:"FERNANDEZ",rating:"9.0"},
+{name:"VANAKKAM MADURAI",rating:"8.6"},
+{name:"DEVIL",rating:"8.9"},
+{name:"JAI BHIM",rating:"9.4"},
+{name:"NAIDUS PADAM",rating:"8.7"},
+{name:"NAWAJ",rating:"9.3"},
+{name:"SHRAMANA",rating:"9.2"},
+{name:"KOPLAM",rating:"9.4"},
+{name:"POOJAI",rating:"9.0"},
+{name:"ULJADDI",rating:"7.0"},
+{name:"NAGARJUNA: EDHU NAGARJUNA VA",rating:"9.5"}
 
-body{
+];
 
-    background:
-    radial-gradient(circle at top,#3a2500,#050505 55%);
 
-    color:white;
-    min-height:100vh;
 
-}
 
+const shows = {
 
-.app{
 
-    width:100%;
-    min-height:100vh;
+"MARUTHUVAR":[
+["12:00 PM","STANDARD"],
+["3:00 PM","IMAX"],
+["6:00 PM","LUXE"],
+["9:00 PM","4DX"]
+],
 
-}
 
+"HIT":[
+["11:00 AM","STANDARD"],
+["2:30 PM","LUXE"],
+["6:30 PM","IMAX"],
+["10:00 PM","ICE"]
+],
 
 
-.page{
+"SPY":[
+["10:00 AM","ICE"],
+["1:00 PM","IMAX"],
+["5:00 PM","3D"],
+["9:00 PM","STANDARD"]
+],
 
-    display:none;
-    min-height:100vh;
-    padding:40px 20px;
-    text-align:center;
 
-    animation:fade 0.5s ease;
+"JAI BHIM":[
+["12:30 PM","STANDARD"],
+["3:30 PM","IMAX"],
+["7:00 PM","LUXE"],
+["10:30 PM","4DX"]
+]
 
-}
 
+};
 
-.page.active{
 
-    display:block;
 
-}
 
+let booking={
 
+movie:"",
+rating:"",
+date:"",
+people:1,
+time:"",
+screen:"",
+seats:[],
+total:0
 
-@keyframes fade{
+};
 
-    from{
-        opacity:0;
-        transform:translateY(20px);
-    }
 
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
 
-}
 
 
+// PAGE CHANGE
 
+function openPage(page){
 
-/* ================================
-        HOME SCREEN
-================================ */
 
+document.querySelectorAll(".page")
+.forEach(p=>{
 
-.hero{
+p.classList.remove("active");
 
-    height:90vh;
+});
 
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
 
-}
+document.getElementById(page)
+.classList.add("active");
 
-
-
-.logo{
-
-    font-size:60px;
-    font-weight:900;
-
-    color:#ffd700;
-
-    letter-spacing:8px;
-
-    text-shadow:
-    0 0 15px gold,
-    0 0 40px #ff9900;
-
-}
-
-
-.logo span{
-
-    color:white;
-
-}
-
-
-.logo small{
-
-    display:block;
-
-    font-size:18px;
-
-    letter-spacing:12px;
-
-    color:white;
-
-}
-
-
-
-.hero h1{
-
-    margin-top:40px;
-
-    font-size:45px;
-
-}
-
-
-
-.hero p{
-
-    margin:20px;
-
-    color:#ddd;
-
-    font-size:20px;
-
-}
-
-
-
-
-/* BUTTON */
-
-
-.premium-btn{
-
-    margin-top:25px;
-
-    padding:15px 40px;
-
-    border:none;
-
-    border-radius:40px;
-
-    background:
-    linear-gradient(45deg,#ffd700,#ff9900);
-
-    color:black;
-
-    font-size:18px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    transition:0.3s;
-
-    box-shadow:0 0 20px gold;
-
-}
-
-
-
-.premium-btn:hover{
-
-    transform:scale(1.08);
 
 }
 
@@ -188,151 +122,72 @@ body{
 
 
 
-/* ================================
-        HEADINGS
-================================ */
+
+// MOVIES
 
 
-h1{
-
-    color:#ffd700;
-
-    margin-bottom:30px;
-
-    font-size:38px;
-
-}
+function showMovies(){
 
 
+let box=document.getElementById("movieContainer");
+
+box.innerHTML="";
 
 
-/* ================================
-        MOVIE CARDS
-================================ */
+movies.forEach(movie=>{
 
 
-.movie-grid{
-
-    display:grid;
-
-    grid-template-columns:
-    repeat(auto-fit,minmax(220px,1fr));
-
-    gap:25px;
-
-    max-width:1100px;
-
-    margin:auto;
-
-}
+box.innerHTML += `
 
 
-
-.movie-card{
-
-    height:280px;
-
-    background:
-
-    linear-gradient(
-    145deg,
-    rgba(255,215,0,.25),
-    rgba(255,255,255,.05)
-    );
+<div class="movie-card"
+onclick="selectMovie('${movie.name}','${movie.rating}')">
 
 
-    border-radius:20px;
+🎬
 
-    padding:25px;
+<h2>${movie.name}</h2>
 
-    display:flex;
+<div class="rating">
 
-    flex-direction:column;
+⭐ ${movie.rating}/10
 
-    justify-content:center;
-
-    align-items:center;
+</div>
 
 
-    backdrop-filter:blur(15px);
+<p>
+Premium Cinema Experience
+</p>
 
-    border:1px solid rgba(255,215,0,.4);
 
-    cursor:pointer;
+</div>
 
-    transition:.4s;
+
+`;
+
+
+});
+
+
+openPage("movies");
 
 
 }
 
 
 
-.movie-card:hover{
-
-    transform:
-    translateY(-15px)
-    scale(1.03);
-
-    box-shadow:
-    0 0 30px gold;
-
-}
 
 
-
-.movie-card h2{
-
-    color:#ffd700;
-
-    margin-bottom:20px;
-
-}
+function selectMovie(name,rating){
 
 
+booking.movie=name;
+
+booking.rating=rating;
 
 
-/* ================================
-        SHOW BUTTONS
-================================ */
+openPage("details");
 
-
-.show-grid{
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    justify-content:center;
-
-    gap:20px;
-
-}
-
-
-
-.show-card{
-
-    padding:20px 35px;
-
-    border-radius:15px;
-
-    background:#111;
-
-    border:1px solid gold;
-
-    cursor:pointer;
-
-    transition:.3s;
-
-}
-
-
-
-.show-card:hover{
-
-    background:#ffd700;
-
-    color:black;
 
 }
 
@@ -340,111 +195,38 @@ h1{
 
 
 
-/* ================================
-        SEATS
-================================ */
+// DATE + PEOPLE
 
 
-.cinema-screen{
+function continueToShows(){
 
-    width:70%;
 
-    margin:20px auto 40px;
+let date=document.getElementById("showDate").value;
 
-    padding:15px;
 
-    background:white;
+if(date==""){
 
-    color:black;
+alert("Please select show date");
 
-    border-radius:50%;
-
-    box-shadow:
-    0 0 30px white;
+return;
 
 }
 
 
 
-.seat-category h3{
-
-    color:#ffd700;
-
-    margin:25px;
-
-}
+booking.date=date;
 
 
+booking.people=
 
-.seat-area{
-
-    display:flex;
-
-    justify-content:center;
-
-    flex-wrap:wrap;
-
-    gap:10px;
-
-    max-width:800px;
-
-    margin:auto;
-
-}
+Number(
+document.getElementById("peopleCount").value
+);
 
 
 
-.seat{
+loadShows();
 
-    width:45px;
-
-    height:40px;
-
-    background:#222;
-
-    border:1px solid #777;
-
-    border-radius:8px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    cursor:pointer;
-
-    transition:.3s;
-
-}
-
-
-
-.seat:hover{
-
-    transform:scale(1.15);
-
-}
-
-
-
-.seat.selected{
-
-    background:#00c853;
-
-    color:white;
-
-    box-shadow:0 0 15px green;
-
-}
-
-
-
-.seat.booked{
-
-    background:#d50000;
-
-    cursor:not-allowed;
 
 }
 
@@ -452,161 +234,418 @@ h1{
 
 
 
-/* ================================
-        SNACKS
-================================ */
+// SHOWS
 
 
-.snack-grid{
+function loadShows(){
 
-    display:grid;
 
-    grid-template-columns:
-    repeat(auto-fit,minmax(220px,1fr));
-
-    gap:25px;
-
-    max-width:900px;
-
-    margin:auto;
-
-}
+document.getElementById("selectedMovieTitle")
+.innerHTML=
+booking.movie;
 
 
 
-.snack-card{
-
-    background:#111;
-
-    border:1px solid gold;
-
-    padding:30px;
-
-    border-radius:20px;
-
-    font-size:40px;
-
-}
+let box=document.getElementById("showContainer");
 
 
+box.innerHTML="";
 
-.snack-card h3{
 
-    font-size:18px;
+let list=
+shows[booking.movie] ||
 
-    margin:15px;
+[
 
-}
+["12:00 PM","STANDARD"],
+
+["3:00 PM","STANDARD"],
+
+["6:00 PM","LUXE"],
+
+["9:00 PM","IMAX"]
+
+];
 
 
 
-.snack-card input{
-
-    width:80px;
-
-    padding:10px;
-
-    border-radius:10px;
-
-}
+list.forEach(show=>{
 
 
+box.innerHTML +=`
 
 
-
-/* ================================
-        TICKET
-================================ */
+<div class="show-card"
+onclick="selectShow('${show[0]}','${show[1]}')">
 
 
-.ticket-card{
+⏰ ${show[0]}
 
-    max-width:500px;
+<br>
 
-    margin:auto;
+🎥 ${show[1]}
 
-    padding:40px;
 
-    background:white;
+</div>
 
-    color:black;
 
-    border-radius:25px;
+`;
 
-    box-shadow:
 
-    0 0 40px gold;
-
-}
+});
 
 
 
-.ticket-card h1{
+openPage("shows");
 
-    color:#111;
-
-}
-
-
-
-.ticket-card h2{
-
-    color:green;
-
-    margin:20px;
-
-}
-
-
-
-#ticketDetails{
-
-    line-height:2;
-
-    font-size:18px;
 
 }
 
 
 
 
-canvas{
 
-    margin:25px;
+
+
+// SEATS
+
+
+function selectShow(time,screen){
+
+
+booking.time=time;
+
+booking.screen=screen;
+
+booking.seats=[];
+
+
+generateSeats();
+
+
+openPage("seats");
+
 
 }
 
 
 
 
-/* ================================
-        MOBILE
-================================ */
+
+function generateSeats(){
 
 
-@media(max-width:600px){
+let vip=document.getElementById("vipSeats");
+
+let premium=document.getElementById("premiumSeats");
+
+let regular=document.getElementById("regularSeats");
 
 
-.hero h1{
 
-font-size:30px;
+vip.innerHTML="";
+
+premium.innerHTML="";
+
+regular.innerHTML="";
+
+
+
+createSeats(vip,"V",6,500);
+
+createSeats(premium,"P",15,350);
+
+createSeats(regular,"R",30,200);
+
+
+
+updateSeatInfo();
+
 
 }
 
 
-.logo{
 
-font-size:40px;
+
+
+function createSeats(box,prefix,total,price){
+
+
+for(let i=1;i<=total;i++){
+
+
+box.innerHTML +=`
+
+
+<div class="seat"
+onclick="chooseSeat(this,'${prefix}${i}',${price})">
+
+
+${prefix}${i}
+
+
+</div>
+
+
+`;
+
+
+}
+
 
 }
 
 
 
-h1{
 
-font-size:30px;
+
+function chooseSeat(el,id,price){
+
+
+
+if(el.classList.contains("selected")){
+
+
+el.classList.remove("selected");
+
+
+booking.seats=
+
+booking.seats.filter(
+s=>s.id!==id
+);
+
 
 }
+
+else{
+
+
+if(booking.seats.length>=booking.people){
+
+
+alert(
+`You can select only ${booking.people} seats`
+);
+
+
+return;
+
+
+}
+
+
+
+el.classList.add("selected");
+
+
+booking.seats.push({
+
+id:id,
+
+price:price
+
+});
+
+
+}
+
+
+updateSeatInfo();
+
+
+}
+
+
+
+
+
+function updateSeatInfo(){
+
+
+let info=document.getElementById("seatInfo");
+
+
+if(info)
+
+info.innerHTML=
+
+`Selected ${booking.seats.length}/${booking.people} seats`;
+
+}
+
+
+
+
+
+// SNACKS
+
+
+function openSnacks(){
+
+
+if(booking.seats.length!=booking.people){
+
+
+alert("Please select seats according to number of people");
+
+return;
+
+
+}
+
+
+openPage("snacks");
+
+
+}
+
+
+
+
+
+// CONFIRM
+
+
+function confirmBooking(){
+
+
+let total=0;
+
+
+
+booking.seats.forEach(seat=>{
+
+
+total+=seat.price;
+
+
+});
+
+
+
+total +=
+
+Number(document.getElementById("popcorn").value)*120;
+
+
+total +=
+
+Number(document.getElementById("cola").value)*80;
+
+
+total +=
+
+Number(document.getElementById("fries").value)*150;
+
+
+total +=
+
+Number(document.getElementById("icecream").value)*100;
+
+
+
+booking.total=total;
+
+
+generateTicket();
+
+
+}
+
+
+
+
+
+
+// TICKET
+
+
+function generateTicket(){
+
+
+openPage("ticket");
+
+
+
+document.getElementById("ticketDetails")
+.innerHTML=
+
+
+`
+
+<b>Movie:</b> ${booking.movie}
+
+<br>
+
+⭐ Rating: ${booking.rating}/10
+
+<br>
+
+📅 Date: ${booking.date}
+
+<br>
+
+👥 People: ${booking.people}
+
+<br>
+
+⏰ Time: ${booking.time}
+
+<br>
+
+🎥 Screen: ${booking.screen}
+
+<br>
+
+💺 Seats:
+${booking.seats.map(s=>s.id).join(", ")}
+
+<br>
+
+💰 Total:
+₹${booking.total}
+
+
+`;
+
+
+
+
+
+let qrData=`
+
+Kumkum Theatre
+
+Movie:
+${booking.movie}
+
+Date:
+${booking.date}
+
+Seats:
+${booking.seats.map(s=>s.id)}
+
+Total:
+₹${booking.total}
+
+`;
+
+
+
+
+new QRious({
+
+element:
+document.getElementById("qr"),
+
+value:qrData,
+
+size:220
+
+
+});
+
 
 
 }
