@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,195 +12,377 @@
 
 </head>
 
+
 <body>
+
 
 <div class="app">
 
-    <!-- HOME PAGE -->
-    <section id="home" class="page active">
 
-        <div class="hero">
 
-            <div class="logo">
-                <span>★</span>
-                KUMKUM
-                <small>THEATRE</small>
-            </div>
+<!-- HOME -->
 
+<section id="home" class="page active">
 
-            <h1>Welcome to Kumkum Theatre</h1>
 
-            <p>
-                Experience movies like never before
-                with IMAX • LUXE • ICE • 4DX
-            </p>
+<div class="hero">
 
 
-            <button class="premium-btn" onclick="showMovies()">
-                Book Your Experience
-            </button>
+<div class="logo">
 
-        </div>
+★ KUMKUM
 
-    </section>
+<small>THEATRE</small>
 
+</div>
 
 
-    <!-- MOVIE SELECTION -->
 
-    <section id="movies" class="page">
+<h1>
+Welcome to Kumkum Theatre
+</h1>
 
-        <h1>Select Your Movie</h1>
 
-        <div id="movieContainer" class="movie-grid"></div>
+<p>
+Luxury Cinema Experience
+<br>
+IMAX • LUXE • ICE • 4DX
+</p>
 
-    </section>
 
 
+<button class="premium-btn" onclick="showMovies()">
 
-    <!-- SHOW SELECTION -->
+Book Your Experience
 
-    <section id="shows" class="page">
+</button>
 
-        <h1 id="selectedMovieTitle"></h1>
 
-        <p>Select Showtime & Screen</p>
 
-        <div id="showContainer" class="show-grid"></div>
+</div>
 
-    </section>
 
+</section>
 
 
-    <!-- SEAT SELECTION -->
 
-    <section id="seats" class="page">
 
-        <h1>Select Seats</h1>
 
-        <div id="screenName" class="cinema-screen">
-            SCREEN
-        </div>
+<!-- MOVIES -->
 
 
-        <div class="seat-category">
+<section id="movies" class="page">
 
-            <h3>VIP ₹500</h3>
 
-            <div id="vipSeats" class="seat-area"></div>
+<h1>Select Movie</h1>
 
 
-            <h3>Premium ₹350</h3>
+<div id="movieContainer" class="movie-grid"></div>
 
-            <div id="premiumSeats" class="seat-area"></div>
 
+</section>
 
-            <h3>Regular ₹200</h3>
 
-            <div id="regularSeats" class="seat-area"></div>
 
 
-        </div>
 
 
-        <button class="premium-btn" onclick="openSnacks()">
-            Continue
-        </button>
 
+<!-- DATE + PEOPLE -->
 
-    </section>
 
+<section id="details" class="page">
 
 
+<h1>Booking Details</h1>
 
-    <!-- SNACKS -->
 
 
-    <section id="snacks" class="page">
+<div class="booking-box">
 
-        <h1>Food & Beverages</h1>
 
-        <div class="snack-grid">
+<label>
+Select Date
+</label>
 
 
-            <div class="snack-card">
-                🍿
-                <h3>Classic Popcorn</h3>
-                <input type="number" min="0" value="0" id="popcorn">
-            </div>
+<input 
+type="date"
+id="showDate">
 
 
 
-            <div class="snack-card">
-                🥤
-                <h3>Coca Cola</h3>
-                <input type="number" min="0" value="0" id="cola">
-            </div>
+<br>
 
 
 
-            <div class="snack-card">
-                🍟
-                <h3>French Fries</h3>
-                <input type="number" min="0" value="0" id="fries">
-            </div>
+<label>
+Number of People
+</label>
 
 
+<select id="peopleCount">
 
-            <div class="snack-card">
-                🍫
-                <h3>Magnum Ice Cream</h3>
-                <input type="number" min="0" value="0" id="icecream">
-            </div>
 
+<option value="1">
+1 Person
+</option>
 
-        </div>
 
+<option value="2">
+2 People
+</option>
 
-        <button class="premium-btn" onclick="confirmBooking()">
-            Confirm Booking
-        </button>
 
+<option value="3">
+3 People
+</option>
 
-    </section>
 
+<option value="4">
+4 People
+</option>
 
 
+<option value="5">
+5 People
+</option>
 
-    <!-- FINAL TICKET -->
 
+<option value="6">
+6 People
+</option>
 
-    <section id="ticket" class="page">
 
+<option value="7">
+7 People
+</option>
 
-        <div class="ticket-card">
 
+<option value="8">
+8 People
+</option>
 
-            <h1>
-                🎬 Kumkum Theatre
-            </h1>
 
+</select>
 
-            <h2>
-                Booking Confirmed
-            </h2>
 
 
-            <div id="ticketDetails"></div>
+<button class="premium-btn"
+onclick="continueToShows()">
 
+Continue
 
-            <canvas id="qr"></canvas>
+</button>
 
 
-            <button class="premium-btn" onclick="location.reload()">
-                Book Another Movie
-            </button>
 
+</div>
 
-        </div>
 
+</section>
 
-    </section>
+
+
+
+
+
+
+
+
+<!-- SHOWS -->
+
+
+<section id="shows" class="page">
+
+
+<h1 id="selectedMovieTitle"></h1>
+
+
+<p>
+Select Showtime & Screen
+</p>
+
+
+<div id="showContainer" class="show-grid"></div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- SEATS -->
+
+
+<section id="seats" class="page">
+
+
+<h1>Select Seats</h1>
+
+
+
+<div class="cinema-screen">
+
+SCREEN
+
+</div>
+
+
+
+
+<h3 class="seat-title">
+VIP ₹500
+</h3>
+
+<div id="vipSeats" class="seat-area"></div>
+
+
+
+
+
+<h3 class="seat-title">
+Premium ₹350
+</h3>
+
+<div id="premiumSeats" class="seat-area"></div>
+
+
+
+
+
+<h3 class="seat-title">
+Regular ₹200
+</h3>
+
+
+<div id="regularSeats" class="seat-area"></div>
+
+
+
+
+
+<p id="seatInfo"></p>
+
+
+
+<button class="premium-btn"
+onclick="openSnacks()">
+
+Continue
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- SNACKS -->
+
+
+<section id="snacks" class="page">
+
+
+<h1>
+Food & Beverages
+</h1>
+
+
+
+<div class="snack-grid">
+
+
+
+<div class="snack-card">
+
+🍿
+
+<h3>
+Popcorn
+</h3>
+
+<input 
+type="number"
+id="popcorn"
+min="0"
+value="0">
+
+</div>
+
+
+
+
+
+<div class="snack-card">
+
+🥤
+
+<h3>
+Coca Cola
+</h3>
+
+<input 
+type="number"
+id="cola"
+min="0"
+value="0">
+
+</div>
+
+
+
+
+
+<div class="snack-card">
+
+🍟
+
+<h3>
+French Fries
+</h3>
+
+<input 
+type="number"
+id="fries"
+min="0"
+value="0">
+
+</div>
+
+
+
+
+
+<div class="snack-card">
+
+🍦
+
+<h3>
+Magnum Ice Cream
+</h3>
+
+<input 
+type="number"
+id="icecream"
+min="0"
+value="0">
+
+</div>
+
 
 
 
@@ -206,10 +390,85 @@
 
 
 
+<button class="premium-btn"
+onclick="confirmBooking()">
+
+Confirm Booking
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- TICKET -->
+
+
+<section id="ticket" class="page">
+
+
+<div class="ticket-card">
+
+
+<h1>
+🎬 Kumkum Theatre
+</h1>
+
+
+<h2>
+Booking Confirmed
+</h2>
+
+
+
+<div id="ticketDetails">
+
+</div>
+
+
+
+<canvas id="qr"></canvas>
+
+
+
+<button class="premium-btn"
+onclick="location.reload()">
+
+Book Another Movie
+
+</button>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+</div>
+
+
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
 
 <script src="script.js"></script>
 
 
+
 </body>
+
 </html>
