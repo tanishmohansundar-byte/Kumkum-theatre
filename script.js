@@ -5,41 +5,33 @@
 
 const movies = [
 
-const movies = [
+"MARUTHUVAR",
+"HIT",
+"DOOR",
+"DOOR 2",
+"SPY",
+"BISTER",
+"THOZHAM",
+"HOSPA",
+"AIM",
+"ONE LIFE",
+"HARBOUR",
+"AUTOKARAN",
+"USPA",
+"USPA 2",
+"USPA 3",
+"HOSARANGA",
+"MAGADI",
+"MUJAHIDEEN",
+"THALAIVA",
+"ALLA RETURNS",
+"FERNANDEZ",
+"VANAKKAM MADURAI",
+"DEVIL",
+"JAI BHIM",
+"DETECTIVE",
+"NAIDUS PADAM"
 
-{name:"MARUTHUVAR", rating:"6.8"},
-{name:"HIT", rating:"3.8"},
-{name:"DOOR", rating:"7.8"},
-{name:"DOOR 2", rating:"8.0"},
-{name:"SPY", rating:"9.6"},
-{name:"BISTER", rating:"9.2"},
-{name:"THOZHAM", rating:"8.4"},
-{name:"HOSPA", rating:"8.9"},
-{name:"AIM", rating:"9.6"},
-{name:"ONE LIFE", rating:"8.6"},
-{name:"HARBOUR", rating:"9.8"},
-{name:"AUTOKARAN", rating:"9.5"},
-{name:"USPA", rating:"5.3"},
-{name:"USPA 2", rating:"5.2"},
-{name:"USPA 3", rating:"6.1"},
-{name:"HOSARANGA", rating:"5.8"},
-{name:"HOSARANGA 2", rating:"6.0"},
-{name:"MUJAHIDEEN", rating:"9.1"},
-{name:"THALAIVA", rating:"7.6"},
-{name:"ALLA RETURNS", rating:"7.8"},
-{name:"FERNANDEZ", rating:"9.0"},
-{name:"VANAKKAM MADURAI", rating:"8.6"},
-{name:"DEVIL", rating:"8.9"},
-{name:"JAI BHIM", rating:"9.4"},
-{name:"NAIDUS PADAM", rating:"8.7"},
-{name:"NAWAJ", rating:"9.3"},
-{name:"SHRAMANA", rating:"9.2"},
-{name:"KOPLAM", rating:"9.4"},
-{name:"POOJAI", rating:"9.0"},
-{name:"ULJADDI", rating:"7.0"},
-{name:"NAGARJUNA: EDHU NAGARJUNA VA", rating:"9.5"}
-
-];
 ];
 
 
