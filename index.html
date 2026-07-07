@@ -1,249 +1,379 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Kumkum Theatre Booking</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #111;
-      color: white;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    .screen {
-      display: none;
-      padding: 30px;
-    }
-    .active {
-      display: block;
-      animation: fadeIn 0.6s ease;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-    h1, h2 {
-      color: gold;
-    }
-    button {
-      background-color: crimson;
-      border: none;
-      padding: 12px 24px;
-      margin: 12px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      color: white;
-    }
-    button:hover {
-      background-color: darkred;
-    }
-    input {
-      margin: 10px;
-      padding: 8px;
-      font-size: 14px;
-      border-radius: 6px;
-      border: none;
-    }
-    .seat-grid {
-      display: grid;
-      grid-template-columns: repeat(8, 40px);
-      grid-gap: 8px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-    .seat {
-      width: 40px;
-      height: 40px;
-      background: #666;
-      border-radius: 5px;
-      cursor: pointer;
-      line-height: 40px;
-    }
-    .seat.selected {
-      background: green;
-      color: white;
-    }
-    .seat.premium {
-      background: #9999ff;
-    }
-    .result-box {
-      margin-top: 20px;
-      padding: 15px;
-      background: #222;
-      border-radius: 10px;
-      display: inline-block;
-    }
-    canvas {
-      margin-top: 15px;
-      background: white;
-      padding: 10px;
-      border-radius: 8px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kumkum Cinemas</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+scroll-behavior:smooth;
+}
+
+body{
+background:#050505;
+color:white;
+overflow-x:hidden;
+}
+
+header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+padding:18px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(0,0,0,.65);
+backdrop-filter:blur(12px);
+z-index:1000;
+}
+
+.logo{
+font-size:32px;
+font-weight:700;
+color:#FFD700;
+letter-spacing:2px;
+}
+
+nav a{
+text-decoration:none;
+color:white;
+margin-left:35px;
+font-weight:500;
+transition:.3s;
+}
+
+nav a:hover{
+color:#FFD700;
+}
+
+.hero{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+background:
+linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.92)),
+url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80");
+background-size:cover;
+background-position:center;
+}
+
+.hero h1{
+font-size:75px;
+color:#FFD700;
+text-shadow:0 0 20px rgba(255,215,0,.4);
+margin-bottom:15px;
+}
+
+.hero h3{
+font-size:26px;
+font-weight:400;
+color:#ddd;
+margin-bottom:40px;
+}
+
+.hero p{
+max-width:700px;
+font-size:18px;
+line-height:1.8;
+color:#cfcfcf;
+margin-bottom:45px;
+}
+
+.btn{
+padding:16px 45px;
+border:none;
+border-radius:50px;
+font-size:18px;
+font-weight:600;
+cursor:pointer;
+background:#FFD700;
+color:#111;
+transition:.3s;
+box-shadow:0 0 25px rgba(255,215,0,.3);
+}
+
+.btn:hover{
+transform:translateY(-5px) scale(1.05);
+box-shadow:0 0 35px rgba(255,215,0,.5);
+}
+
+.section{
+padding:100px 8%;
+background:#111;
+display:none;
+}
+
+.section h2{
+font-size:45px;
+text-align:center;
+margin-bottom:10px;
+color:#FFD700;
+}
+
+.section p{
+text-align:center;
+color:#bbb;
+margin-bottom:50px;
+}
+
+.movie-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:30px;
+}
+
+.movie{
+background:#1c1c1c;
+border-radius:18px;
+overflow:hidden;
+transition:.3s;
+cursor:pointer;
+}
+
+.movie:hover{
+transform:translateY(-10px);
+box-shadow:0 0 25px rgba(255,215,0,.2);
+}
+
+.poster{
+height:340px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:70px;
+font-weight:700;
+background:linear-gradient(135deg,#FFD700,#7a0000);
+}
+
+.details{
+padding:20px;
+}
+
+.details h3{
+color:#FFD700;
+margin-bottom:10px;
+}
+
+.details p{
+margin:8px 0;
+text-align:left;
+color:#ddd;
+}
+
+.book{
+width:100%;
+padding:12px;
+margin-top:15px;
+border:none;
+border-radius:30px;
+background:#FFD700;
+font-weight:600;
+cursor:pointer;
+}
+
+footer{
+background:#000;
+padding:25px;
+text-align:center;
+color:#888;
+margin-top:80px;
+}
+
+@media(max-width:768px){
+
+.hero h1{
+font-size:48px;
+}
+
+.hero h3{
+font-size:20px;
+}
+
+nav{
+display:none;
+}
+
+.logo{
+font-size:24px;
+}
+
+}
+
+</style>
+
 </head>
+
 <body>
 
-  <!-- Welcome -->
-  <div id="welcome" class="screen active">
-    <h1>🎬 Welcome to Kumkum Theatre 🎬</h1>
-    <button onclick="goToScreen('movies')">Book Tickets</button>
-  </div>
+<header>
 
-  <!-- Movies -->
-  <div id="movies" class="screen">
-    <h2>Select a Movie</h2>
-    <button onclick="chooseMovie('JAI BHIM')">Jai Bhim</button>
-    <button onclick="chooseMovie('DETECTIVE')">Detective</button>
-    <button onclick="chooseMovie('NAIDUS PADAM')">Naidus Padam</button>
-    <button onclick="chooseMovie('ULJADDI')">Uljaddi</button>
-    <button onclick="chooseMovie('CHOKER')">Choker</button>
-  </div>
+<div class="logo">
+🎬 Kumkum Cinemas
+</div>
 
-  <!-- Customers + Date -->
-  <div id="customerScreen" class="screen">
-    <h2 id="selectedMovieTitle"></h2>
-    <label>Select Date:</label><br>
-    <input type="date" id="movieDate"><br>
-    <label>Number of Customers:</label><br>
-    <input type="number" id="numCustomers" min="1" max="10"><br>
-    <button onclick="goToSeats()">Proceed to Seat Selection</button>
-  </div>
+<nav>
 
-  <!-- Seat Selection -->
-  <div id="seatScreen" class="screen">
-    <h2>Select Your Seats</h2>
-    <div class="seat-grid" id="seatGrid"></div>
-    <button onclick="confirmBooking()">Confirm Booking</button>
-  </div>
+<a href="#">Home</a>
 
-  <!-- Confirmation -->
-  <div id="confirmation" class="screen">
-    <h2>Booking Confirmed ✅</h2>
-    <div id="ticketDetails" class="result-box"></div>
-    <canvas id="qrcode"></canvas>
-    <br>
-    <button onclick="restartBooking()">Book Again</button>
-  </div>
+<a href="#">Movies</a>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
-  <script>
-    let chosenMovie = "";
-    let chosenShow = "";
-    let chosenScreen = "";
-    let numCustomers = 0;
-    let selectedSeats = [];
+<a href="#">Offers</a>
 
-    function goToScreen(id) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
+<a href="#">Contact</a>
 
-    function chooseMovie(movie) {
-      chosenMovie = movie;
-      let shows = "";
-      if (movie === "ULJADDI") {
-        chosenShow = "9:45 PM";
-        chosenScreen = "Screen 4";
-      } else if (movie === "CHOKER") {
-        chosenShow = "10:20 PM";
-        chosenScreen = "Screen 2";
-      } else {
-        chosenShow = "6:00 PM";
-        chosenScreen = "Screen 1";
-      }
-      document.getElementById("selectedMovieTitle").innerText = 
-        movie + " - " + chosenShow + " (" + chosenScreen + ")";
-      goToScreen('customerScreen');
-    }
+</nav>
 
-    function goToSeats() {
-      let date = document.getElementById('movieDate').value;
-      numCustomers = parseInt(document.getElementById('numCustomers').value);
+</header>
 
-      if (!date || !numCustomers) {
-        alert("Please select a date and number of customers.");
-        return;
-      }
+<section class="hero">
 
-      buildSeats();
-      goToScreen('seatScreen');
-    }
+<h1>KUMKUM CINEMAS</h1>
 
-    function buildSeats() {
-      const seatGrid = document.getElementById('seatGrid');
-      seatGrid.innerHTML = "";
-      selectedSeats = [];
+<h3>Experience Movies Like Never Before</h3>
 
-      for (let r = 1; r <= 6; r++) {
-        for (let c = 1; c <= 8; c++) {
-          let seat = document.createElement("div");
-          seat.classList.add("seat");
-          seat.innerText = r + "" + c;
-          if (r <= 2) seat.classList.add("premium");
-          seat.onclick = () => toggleSeat(seat);
-          seatGrid.appendChild(seat);
-        }
-      }
-    }
+<p>
 
-    function toggleSeat(seat) {
-      if (seat.classList.contains("selected")) {
-        seat.classList.remove("selected");
-        selectedSeats = selectedSeats.filter(s => s !== seat.innerText);
-      } else {
-        if (selectedSeats.length >= numCustomers) {
-          alert("You can only select " + numCustomers + " seats.");
-          return;
-        }
-        seat.classList.add("selected");
-        selectedSeats.push(seat.innerText);
-      }
-    }
+Book tickets for the latest blockbusters, choose premium screens like
+IMAX, LUXE, ICE and 4DX, enjoy delicious snacks and experience cinema
+in a whole new way.
 
-    function confirmBooking() {
-      if (selectedSeats.length !== numCustomers) {
-        alert("Please select " + numCustomers + " seats.");
-        return;
-      }
+</p>
 
-      let total = 0;
-      selectedSeats.forEach(seat => {
-        let row = parseInt(seat[0]);
-        total += (row <= 2) ? 350 : 200;
-      });
+<button class="btn" onclick="openMovies()">
 
-      let bookingInfo = `
-        🎬 ${chosenMovie}
-        📅 ${document.getElementById('movieDate').value}
-        ⏰ ${chosenShow} (${chosenScreen})
-        💺 Seats: ${selectedSeats.join(", ")}
-        🎟 Tickets: ${numCustomers}
-        💰 Total: ₹${total}
-      `;
+🎟 Enter Theatre
 
-      document.getElementById("ticketDetails").innerHTML = bookingInfo.replace(/\n/g,"<br>");
+</button>
 
-      let qr = new QRious({
-        element: document.getElementById('qrcode'),
-        value: bookingInfo,
-        size: 200
-      });
+</section>
 
-      goToScreen('confirmation');
-    }
+<section class="section" id="movies">
 
-    function restartBooking() {
-      chosenMovie = "";
-      chosenShow = "";
-      chosenScreen = "";
-      numCustomers = 0;
-      selectedSeats = [];
-      goToScreen('movies');
-    }
-  </script>
+<h2>Now Showing</h2>
+
+<p>
+
+Choose your favourite movie to continue booking.
+
+</p>
+
+<div class="movie-grid">
+
+<div class="movie">
+
+<div class="poster">
+
+N
+
+</div>
+
+<div class="details">
+
+<h3>Nagarjuna</h3>
+
+<p><b>Hero:</b> Edhu Nagarjuna Va</p>
+
+<p><b>Director:</b> Kute Allae</p>
+
+<button class="book">
+
+Book Now
+
+</button>
+
+</div>
+
+</div>
+
+<div class="movie">
+
+<div class="poster">
+
+306
+
+</div>
+
+<div class="details">
+
+<h3>306</h3>
+
+<p><b>Hero:</b> Tanish</p>
+
+<p><b>Director:</b> Za</p>
+
+<button class="book">
+
+Book Now
+
+</button>
+
+</div>
+
+</div>
+
+<div class="movie">
+
+<div class="poster">
+
+G
+
+</div>
+
+<div class="details">
+
+<h3>Gangster</h3>
+
+<p><b>Hero:</b> Oppe</p>
+
+<p><b>Director:</b> Tute</p>
+
+<button class="book">
+
+Book Now
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+© 2026 Kumkum Cinemas • Premium Movie Experience
+
+</footer>
+
+<script>
+
+function openMovies(){
+
+document.querySelector(".hero").style.display="none";
+
+document.getElementById("movies").style.display="block";
+
+window.scrollTo(0,0);
+
+}
+
+</script>
 
 </body>
 </html>
