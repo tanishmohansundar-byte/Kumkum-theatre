@@ -1,0 +1,612 @@
+/* ================================
+   KUMKUM THEATRE PREMIUM DESIGN
+================================ */
+
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+
+body{
+
+    background:
+    radial-gradient(circle at top,#3a2500,#050505 55%);
+
+    color:white;
+    min-height:100vh;
+
+}
+
+
+.app{
+
+    width:100%;
+    min-height:100vh;
+
+}
+
+
+
+.page{
+
+    display:none;
+    min-height:100vh;
+    padding:40px 20px;
+    text-align:center;
+
+    animation:fade 0.5s ease;
+
+}
+
+
+.page.active{
+
+    display:block;
+
+}
+
+
+
+@keyframes fade{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+
+
+
+/* ================================
+        HOME SCREEN
+================================ */
+
+
+.hero{
+
+    height:90vh;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+}
+
+
+
+.logo{
+
+    font-size:60px;
+    font-weight:900;
+
+    color:#ffd700;
+
+    letter-spacing:8px;
+
+    text-shadow:
+    0 0 15px gold,
+    0 0 40px #ff9900;
+
+}
+
+
+.logo span{
+
+    color:white;
+
+}
+
+
+.logo small{
+
+    display:block;
+
+    font-size:18px;
+
+    letter-spacing:12px;
+
+    color:white;
+
+}
+
+
+
+.hero h1{
+
+    margin-top:40px;
+
+    font-size:45px;
+
+}
+
+
+
+.hero p{
+
+    margin:20px;
+
+    color:#ddd;
+
+    font-size:20px;
+
+}
+
+
+
+
+/* BUTTON */
+
+
+.premium-btn{
+
+    margin-top:25px;
+
+    padding:15px 40px;
+
+    border:none;
+
+    border-radius:40px;
+
+    background:
+    linear-gradient(45deg,#ffd700,#ff9900);
+
+    color:black;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+    box-shadow:0 0 20px gold;
+
+}
+
+
+
+.premium-btn:hover{
+
+    transform:scale(1.08);
+
+}
+
+
+
+
+
+/* ================================
+        HEADINGS
+================================ */
+
+
+h1{
+
+    color:#ffd700;
+
+    margin-bottom:30px;
+
+    font-size:38px;
+
+}
+
+
+
+
+/* ================================
+        MOVIE CARDS
+================================ */
+
+
+.movie-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:25px;
+
+    max-width:1100px;
+
+    margin:auto;
+
+}
+
+
+
+.movie-card{
+
+    height:280px;
+
+    background:
+
+    linear-gradient(
+    145deg,
+    rgba(255,215,0,.25),
+    rgba(255,255,255,.05)
+    );
+
+
+    border-radius:20px;
+
+    padding:25px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    backdrop-filter:blur(15px);
+
+    border:1px solid rgba(255,215,0,.4);
+
+    cursor:pointer;
+
+    transition:.4s;
+
+
+}
+
+
+
+.movie-card:hover{
+
+    transform:
+    translateY(-15px)
+    scale(1.03);
+
+    box-shadow:
+    0 0 30px gold;
+
+}
+
+
+
+.movie-card h2{
+
+    color:#ffd700;
+
+    margin-bottom:20px;
+
+}
+
+
+
+
+/* ================================
+        SHOW BUTTONS
+================================ */
+
+
+.show-grid{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:20px;
+
+}
+
+
+
+.show-card{
+
+    padding:20px 35px;
+
+    border-radius:15px;
+
+    background:#111;
+
+    border:1px solid gold;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+
+
+.show-card:hover{
+
+    background:#ffd700;
+
+    color:black;
+
+}
+
+
+
+
+
+/* ================================
+        SEATS
+================================ */
+
+
+.cinema-screen{
+
+    width:70%;
+
+    margin:20px auto 40px;
+
+    padding:15px;
+
+    background:white;
+
+    color:black;
+
+    border-radius:50%;
+
+    box-shadow:
+    0 0 30px white;
+
+}
+
+
+
+.seat-category h3{
+
+    color:#ffd700;
+
+    margin:25px;
+
+}
+
+
+
+.seat-area{
+
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    max-width:800px;
+
+    margin:auto;
+
+}
+
+
+
+.seat{
+
+    width:45px;
+
+    height:40px;
+
+    background:#222;
+
+    border:1px solid #777;
+
+    border-radius:8px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+
+
+.seat:hover{
+
+    transform:scale(1.15);
+
+}
+
+
+
+.seat.selected{
+
+    background:#00c853;
+
+    color:white;
+
+    box-shadow:0 0 15px green;
+
+}
+
+
+
+.seat.booked{
+
+    background:#d50000;
+
+    cursor:not-allowed;
+
+}
+
+
+
+
+
+/* ================================
+        SNACKS
+================================ */
+
+
+.snack-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:25px;
+
+    max-width:900px;
+
+    margin:auto;
+
+}
+
+
+
+.snack-card{
+
+    background:#111;
+
+    border:1px solid gold;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    font-size:40px;
+
+}
+
+
+
+.snack-card h3{
+
+    font-size:18px;
+
+    margin:15px;
+
+}
+
+
+
+.snack-card input{
+
+    width:80px;
+
+    padding:10px;
+
+    border-radius:10px;
+
+}
+
+
+
+
+
+/* ================================
+        TICKET
+================================ */
+
+
+.ticket-card{
+
+    max-width:500px;
+
+    margin:auto;
+
+    padding:40px;
+
+    background:white;
+
+    color:black;
+
+    border-radius:25px;
+
+    box-shadow:
+
+    0 0 40px gold;
+
+}
+
+
+
+.ticket-card h1{
+
+    color:#111;
+
+}
+
+
+
+.ticket-card h2{
+
+    color:green;
+
+    margin:20px;
+
+}
+
+
+
+#ticketDetails{
+
+    line-height:2;
+
+    font-size:18px;
+
+}
+
+
+
+
+canvas{
+
+    margin:25px;
+
+}
+
+
+
+
+/* ================================
+        MOBILE
+================================ */
+
+
+@media(max-width:600px){
+
+
+.hero h1{
+
+font-size:30px;
+
+}
+
+
+.logo{
+
+font-size:40px;
+
+}
+
+
+
+h1{
+
+font-size:30px;
+
+}
+
+
+}
