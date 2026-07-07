@@ -6,9 +6,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Kumkum Theatre | Premium Cinema</title>
+<title>Kumkum Cinemas | Premium Movie Experience</title>
 
 <link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
 </head>
 
@@ -16,162 +20,68 @@
 <body>
 
 
-<div class="app">
+<!-- ================= NAVBAR ================= -->
 
+<header class="navbar">
 
+<div class="brand">
 
-<!-- HOME -->
-
-<section id="home" class="page active">
-
-
-<div class="hero">
-
-
-<div class="logo">
-
-★ KUMKUM
-
-<small>THEATRE</small>
+🎬 KUMKUM CINEMAS
 
 </div>
 
 
+<nav>
+
+<a href="#home">Home</a>
+
+<a href="#movies">Movies</a>
+
+<a href="#screens">Screens</a>
+
+<a href="#food">Food</a>
+
+<a href="#offers">Offers</a>
+
+<a href="#contact">Contact</a>
+
+</nav>
+
+
+</header>
+
+
+
+
+<!-- ================= HERO ================= -->
+
+
+<section id="home" class="hero">
+
+
+<div class="hero-content">
+
 
 <h1>
-Welcome to Kumkum Theatre
+
+Experience Movies
+
+<span>Like Never Before</span>
+
 </h1>
 
 
 <p>
-Luxury Cinema Experience
-<br>
-IMAX • LUXE • ICE • 4DX
+
+Luxury Seats • IMAX • ICE • 4DX • Dolby Atmos
+
 </p>
 
 
 
-<button class="premium-btn" onclick="showMovies()">
+<button class="premium-btn" onclick="chooseMovie()">
 
-Book Your Experience
-
-</button>
-
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-<!-- MOVIES -->
-
-
-<section id="movies" class="page">
-
-
-<h1>Select Movie</h1>
-
-
-<div id="movieContainer" class="movie-grid"></div>
-
-
-</section>
-
-
-
-
-
-
-
-<!-- DATE + PEOPLE -->
-
-
-<section id="details" class="page">
-
-
-<h1>Booking Details</h1>
-
-
-
-<div class="booking-box">
-
-
-<label>
-Select Date
-</label>
-
-
-<input 
-type="date"
-id="showDate">
-
-
-
-<br>
-
-
-
-<label>
-Number of People
-</label>
-
-
-<select id="peopleCount">
-
-
-<option value="1">
-1 Person
-</option>
-
-
-<option value="2">
-2 People
-</option>
-
-
-<option value="3">
-3 People
-</option>
-
-
-<option value="4">
-4 People
-</option>
-
-
-<option value="5">
-5 People
-</option>
-
-
-<option value="6">
-6 People
-</option>
-
-
-<option value="7">
-7 People
-</option>
-
-
-<option value="8">
-8 People
-</option>
-
-
-</select>
-
-
-
-<button class="premium-btn"
-onclick="continueToShows()">
-
-Continue
+BOOK TICKETS
 
 </button>
 
@@ -187,97 +97,230 @@ Continue
 
 
 
+<!-- ================= ABOUT ================= -->
 
 
-
-<!-- SHOWS -->
-
-
-<section id="shows" class="page">
+<section class="about">
 
 
-<h1 id="selectedMovieTitle"></h1>
+<h2>
+
+Welcome To Kumkum Cinemas
+
+</h2>
+
 
 
 <p>
-Select Showtime & Screen
+
+A premium entertainment destination where cinema meets luxury.
+Enjoy world-class screens, comfortable seating, amazing food,
+and unforgettable movie experiences.
+
 </p>
 
 
-<div id="showContainer" class="show-grid"></div>
+
+<div class="features">
+
+
+<div>
+
+<h3>🎥 8K Projection</h3>
+
+<p>
+Crystal clear visuals
+</p>
+
+</div>
 
 
 
-</section>
+<div>
 
+<h3>🔊 Dolby Atmos</h3>
 
-
-
-
-
-
-
-
-<!-- SEATS -->
-
-
-<section id="seats" class="page">
-
-
-<h1>Select Seats</h1>
-
-
-
-<div class="cinema-screen">
-
-SCREEN
+<p>
+Immersive sound experience
+</p>
 
 </div>
 
 
 
 
-<h3 class="seat-title">
-VIP ₹500
-</h3>
+<div>
 
-<div id="vipSeats" class="seat-area"></div>
+<h3>💺 Luxury Recliners</h3>
 
+<p>
+Maximum comfort
+</p>
 
-
-
-
-<h3 class="seat-title">
-Premium ₹350
-</h3>
-
-<div id="premiumSeats" class="seat-area"></div>
+</div>
 
 
 
+<div>
 
+<h3>🍿 Premium Food</h3>
 
-<h3 class="seat-title">
-Regular ₹200
-</h3>
+<p>
+Cinema snacks & combos
+</p>
 
-
-<div id="regularSeats" class="seat-area"></div>
-
-
-
-
-
-<p id="seatInfo"></p>
+</div>
 
 
 
-<button class="premium-btn"
-onclick="openSnacks()">
+</div>
 
-Continue
 
-</button>
+</section>
+
+
+
+
+
+
+
+<!-- ================= MOVIES ================= -->
+
+
+<section id="movies">
+
+
+<h2>
+
+Now Showing
+
+</h2>
+
+
+
+<div id="movie-list" class="movie-container">
+
+
+<!-- Javascript loads movies here -->
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- ================= BOOKING AREA ================= -->
+
+
+<section id="booking">
+
+
+<div id="app">
+
+
+<!-- Booking system appears here -->
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- ================= PREMIUM SCREENS ================= -->
+
+
+<section id="screens">
+
+
+<h2>
+
+Our Premium Screens
+
+</h2>
+
+
+
+<div class="screen-grid">
+
+
+<div class="movie-card">
+
+
+<h3>IMAX</h3>
+
+<p>
+
+Largest screen with powerful visuals
+
+</p>
+
+
+</div>
+
+
+
+<div class="movie-card">
+
+
+<h3>4DX</h3>
+
+<p>
+
+Motion seats & special effects
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="movie-card">
+
+
+<h3>LUXE</h3>
+
+<p>
+
+Luxury recliner experience
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="movie-card">
+
+
+<h3>ICE</h3>
+
+<p>
+
+Premium immersive cinema
+
+</p>
+
+
+</div>
+
+
+</div>
 
 
 
@@ -290,39 +333,36 @@ Continue
 
 
 
-
-<!-- SNACKS -->
-
-
-<section id="snacks" class="page">
+<!-- ================= FOOD ================= -->
 
 
-<h1>
-Food & Beverages
-</h1>
+<section id="food">
+
+
+<h2>
+
+Cinema Food Experience
+
+</h2>
 
 
 
-<div class="snack-grid">
-
+<div class="snack-container">
 
 
 <div class="snack-card">
 
 🍿
 
-<h3>
-Popcorn
-</h3>
+<h3>Classic Popcorn</h3>
 
-<input 
-type="number"
-id="popcorn"
-min="0"
-value="0">
+<p>
+
+Fresh hot popcorn
+
+</p>
 
 </div>
-
 
 
 
@@ -331,15 +371,13 @@ value="0">
 
 🥤
 
-<h3>
-Coca Cola
-</h3>
+<h3>Cold Drinks</h3>
 
-<input 
-type="number"
-id="cola"
-min="0"
-value="0">
+<p>
+
+Coke, Pepsi & more
+
+</p>
 
 </div>
 
@@ -349,17 +387,15 @@ value="0">
 
 <div class="snack-card">
 
-🍟
+🍔
 
-<h3>
-French Fries
-</h3>
+<h3>Premium Combos</h3>
 
-<input 
-type="number"
-id="fries"
-min="0"
-value="0">
+<p>
+
+Burger + Fries + Drink
+
+</p>
 
 </div>
 
@@ -371,32 +407,19 @@ value="0">
 
 🍦
 
-<h3>
-Magnum Ice Cream
-</h3>
+<h3>Ice Cream</h3>
 
-<input 
-type="number"
-id="icecream"
-min="0"
-value="0">
+<p>
+
+Magnum Specials
+
+</p>
 
 </div>
 
 
 
-
 </div>
-
-
-
-<button class="premium-btn"
-onclick="confirmBooking()">
-
-Confirm Booking
-
-</button>
-
 
 
 </section>
@@ -409,42 +432,87 @@ Confirm Booking
 
 
 
-<!-- TICKET -->
+<!-- ================= OFFERS ================= -->
 
 
-<section id="ticket" class="page">
-
-
-<div class="ticket-card">
-
-
-<h1>
-🎬 Kumkum Theatre
-</h1>
+<section id="offers">
 
 
 <h2>
-Booking Confirmed
+
+Special Offers
+
 </h2>
 
 
 
-<div id="ticketDetails">
+<div class="offers">
+
+
+<div class="movie-card">
+
+
+<h3>
+
+Weekend Offer
+
+</h3>
+
+
+<p>
+
+20% OFF on selected shows
+
+</p>
+
 
 </div>
 
 
 
-<canvas id="qr"></canvas>
+
+
+<div class="movie-card">
+
+
+<h3>
+
+Student Offer
+
+</h3>
+
+
+<p>
+
+Special pricing every Monday
+
+</p>
+
+
+</div>
 
 
 
-<button class="premium-btn"
-onclick="location.reload()">
 
-Book Another Movie
 
-</button>
+<div class="movie-card">
+
+
+<h3>
+
+Family Pack
+
+</h3>
+
+
+<p>
+
+Tickets + Snacks Combo
+
+</p>
+
+
+</div>
 
 
 
@@ -456,17 +524,135 @@ Book Another Movie
 
 
 
-</div>
 
 
 
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<!-- ================= MEMBERSHIP ================= -->
+
+
+<section class="membership">
+
+
+<h2>
+
+Kumkum Gold Membership
+
+</h2>
+
+
+
+<p>
+
+Get exclusive discounts,
+priority booking and premium benefits.
+
+</p>
+
+
+
+<button class="premium-btn">
+
+JOIN NOW
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- ================= CONTACT ================= -->
+
+
+<section id="contact">
+
+
+<h2>
+
+Contact Us
+
+</h2>
+
+
+
+<p>
+
+📍 Kumkum Cinemas
+
+</p>
+
+
+<p>
+
+📞 Customer Care: 1800-KUMKUM
+
+</p>
+
+
+<p>
+
+✉ support@kumkumcinemas.com
+
+</p>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ================= FOOTER ================= -->
+
+
+<footer>
+
+
+<h3>
+
+🎬 KUMKUM CINEMAS
+
+</h3>
+
+
+
+<p>
+
+The premium movie destination
+
+</p>
+
+
+
+<p>
+
+© 2026 Kumkum Cinemas. All Rights Reserved.
+
+</p>
+
+
+
+</footer>
+
+
+
+
 
 
 <script src="script.js"></script>
-
 
 
 </body>
